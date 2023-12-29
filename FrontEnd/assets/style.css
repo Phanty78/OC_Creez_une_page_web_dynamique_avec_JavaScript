@@ -210,7 +210,10 @@ footer nav ul {
 	min-width: 100px;
 }
 
-.filter-container li:hover{
+/* Dans la règle CSS ci-dessous la forme du selecteur est du à un problème
+ de priorité de color qui ne s'appliquait pas sinon  */
+
+.filter-container li.selected-filter{
 	background-color: #1D6154;
 	color: white;
 }

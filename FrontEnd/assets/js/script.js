@@ -34,24 +34,25 @@ async function getWorks(){
             createFiltersButton(arrayWorksSet)
 
             filters = document.querySelectorAll(".filter")
-            console.log(filters)
 
+            // Premier appel à displayWorks pour afficher les travaux lors du première affichage de la page
             displayWorks(works)
 
             for (let i = 0; i < filters.length; i++) {
                 filters[i].addEventListener("click", (event) => {
-                    for (let i = 0; i < filters.length; i++) {
-                        filters[i].classList.remove("selected-filter")      
+                    if (event.target.id === "all-filter") {
+                        addOrRemoveClassSelected(event.target)
+                        displayWorks(works)
+                    }else{
+                        addOrRemoveClassSelected(event.target)
+                        filteredWorks = works.filter((work) => work.category.id === parseInt(event.target.dataset.liId ))
+                        displayWorks(filteredWorks)
                     }
-                    event.target.classList.add("selected-filter")
-                    filteredWorks = works.filter((work) => work.category.id === parseInt(event.target.dataset.liId ))
-                    displayWorks(filteredWorks)
+                    
                 })
             }
 
             }
-
-            
 
         }catch(error){
         console.error('An error was encounter during the API execution : ',error)
@@ -87,6 +88,17 @@ function createFiltersButton(arrayWorksSet){
         filtersContainer.appendChild(liElement)      
     }
 }
+
+// Fonction d'ajout de la class selected et de la supression de cette même classe sur les autres filtres
+
+function addOrRemoveClassSelected(eventTarget){
+    for (let i = 0; i < filters.length; i++) {
+        filters[i].classList.remove("selected-filter")      
+    }
+    eventTarget.classList.add("selected-filter")
+}
+
+
 
 if(gallery) {
     // on verifie que gallery existe bien dans la page avant de s'en servir au sein de getWorks

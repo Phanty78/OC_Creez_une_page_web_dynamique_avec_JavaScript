@@ -21,17 +21,20 @@ async function getWorks(){
 
             const works = await apiResponse.json()
 
-            //On crée un objet Set afin de compter le nombre d'élément avec un id unique présent dans l'objet works
-            const worksSet = new Set();
+            // On fait appel à la fonction callCategoryApi pour récupérer le tableau des catégories existantes
+            const category = await callCategoryApi()
 
-            for (let i = 0; i < works.length; i++) {
-                worksSet.add(works[i].category.name)
+            //On crée un objet Set afin de compter le nombre d'élément avec un id unique présent dans l'objet category
+            const categorySet = new Set();
+
+            for (let i = 0; i < category.length; i++) {
+                categorySet.add(category[i].name)
             }
 
             //convertion en array de l'objet Set
-            const arrayWorksSet = Array.from(worksSet);
+            const arrayCategorySet = Array.from(categorySet);
 
-            createFiltersButton(arrayWorksSet)
+            createFiltersButton(arrayCategorySet)
 
             filters = document.querySelectorAll(".filter")
 
@@ -41,10 +44,10 @@ async function getWorks(){
             for (let i = 0; i < filters.length; i++) {
                 filters[i].addEventListener("click", (event) => {
                     if (event.target.id === "all-filter") {
-                        addOrRemoveClassSelected(event.target)
+                        addOrRemoveClassSelected(event.target,filters)
                         displayWorks(works)
                     }else{
-                        addOrRemoveClassSelected(event.target)
+                        addOrRemoveClassSelected(event.target,filters)
                         filteredWorks = works.filter((work) => work.category.id === parseInt(event.target.dataset.liId ))
                         displayWorks(filteredWorks)
                     }
@@ -66,14 +69,14 @@ function displayWorks(worksToDisplay){
     for (let i = 0; i < worksToDisplay.length; i++) {
         const figureElement = document.createElement("figure")
         const imageElement = document.createElement("img")
-        figureElement.setAttribute("data-id", worksToDisplay[i].category.id);
+        figureElement.setAttribute("data-category-id", worksToDisplay[i].category.id);
         imageElement.src = worksToDisplay[i].imageUrl
         imageElement.alt = worksToDisplay[i].title
         const figcaptionElement = document.createElement("figcaption")
         figcaptionElement.textContent = worksToDisplay[i].title
-        gallery.appendChild(figureElement)
         figureElement.appendChild(imageElement)
         figureElement.appendChild(figcaptionElement)
+        gallery.appendChild(figureElement)
     }
 }
 
@@ -91,7 +94,7 @@ function createFiltersButton(arrayWorksSet){
 
 // Fonction d'ajout de la class selected et de la supression de cette même classe sur les autres filtres
 
-function addOrRemoveClassSelected(eventTarget){
+function addOrRemoveClassSelected(eventTarget,filters){
     for (let i = 0; i < filters.length; i++) {
         filters[i].classList.remove("selected-filter")      
     }
@@ -106,6 +109,29 @@ if(gallery) {
     getWorks();
 }
 
+
+async function callCategoryApi() {
+    try {
+
+        const apiCategoryResponse = await fetch ("http://localhost:5678/api/categories")
+    
+        if (!apiCategoryResponse.ok) {
+    
+            throw new Error(`Response has fail with the status ${apiCategoryResponse.status}`)
+            
+        } else {
+    
+            return apiCategoryResponse.json()
+            
+        }
+        
+    } catch (error) {
+    
+        console.error('An error was encounter during the API execution : ',error)
+    
+    }
+    
+}
 
 
 

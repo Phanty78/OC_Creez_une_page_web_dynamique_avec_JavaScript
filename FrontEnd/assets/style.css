@@ -23,6 +23,7 @@ time, mark, audio, video {
 	font: inherit;
 	vertical-align: baseline;
 }
+
 /* HTML5 display-role reset for older browsers */
 article, aside, details, figcaption, figure,
 footer, header, hgroup, menu, nav, section {
@@ -32,16 +33,13 @@ body {
 	line-height: 1;
 }
 
-header, main{
-	background: #FFFEF8;
-}
-
 ol, ul {
 	list-style: none;
 }
 blockquote, q {
 	quotes: none;
 }
+
 blockquote:before, blockquote:after,
 q:before, q:after {
 	content: '';
@@ -51,18 +49,22 @@ table {
 	border-collapse: collapse;
 	border-spacing: 0;
 }
+
 /** end reset css**/
 body {
 	max-width: 1140px;
 	margin:auto;
 	font-family: 'Work Sans' ;
 	font-size: 14px;
+	background-color: #FFFEF8;
 }
+
 header {
 	display: flex;
 	justify-content: space-between;
 	margin: 50px 0
 }
+
 section {
 	margin: 50px 0
 }
@@ -94,14 +96,22 @@ nav ul {
 	list-style-type: none;
 
 }
-nav li {
+
+nav li a {
 	padding: 0 10px;
 	font-size: 1.2em;
+	color: black;
 }
 
-li:hover {
-	color: #B1663C;
+li a {
+	text-decoration: none;
 }
+
+li a:hover {
+	font-weight: 700;
+	cursor: pointer;
+}
+
 #introduction {
 	display: flex;
 	align-items: center;
@@ -191,11 +201,12 @@ input[type="submit"]{
 footer nav ul {
 	display: flex;
 	justify-content: flex-end;
-	margin: 2em
+	padding: 2em;
 }
 
 footer{
 	background: #FFFFFF;
+	width: 100%;
 }
 
 .filter-container{
@@ -214,13 +225,19 @@ footer{
 	font-weight: 700;
 	border-radius: 60px;
 	border: 1px solid #1D6154;
-	height: 37px;
 	padding: 10px;
 	display: flex;
 	justify-content: center;
 	align-items: center;
 	min-width: 100px;
+	cursor: pointer;
 }
+
+.submit-button{
+	width: 180px;
+	cursor: pointer;
+}
+
 
 /* Dans la règle CSS ci-dessous la forme du selecteur est du à un problème
  de priorité de color qui ne s'appliquait pas sinon  */
@@ -243,6 +260,9 @@ footer{
 	flex-direction: column;
 	justify-content: center;
 	align-items: center;
+	width: 50%;
+	margin: auto;
+	padding-top:  100px;
 }
 
 .login-form{
@@ -252,10 +272,12 @@ footer{
 	align-items: center;
 	text-align: left;
 	margin-top:30px;
+	width: 100%;
 }
 
 .login-form input {
 	height: 50px;
+	width: 100%;
 	font-size: 1.2em;
 	border: none;
 	box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.09);
@@ -273,5 +295,9 @@ footer{
 	font-weight: 500;
 	line-height: normal;
 	text-decoration-line: underline;
+	}
+
+	#submit{
+		width: 180px
 	}
 

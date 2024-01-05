@@ -238,6 +238,10 @@ footer{
 	cursor: pointer;
 }
 
+.submit-button:hover{
+	background-color:  #0E2F28;
+}
+
 
 /* Dans la règle CSS ci-dessous la forme du selecteur est du à un problème
  de priorité de color qui ne s'appliquait pas sinon  */
@@ -299,5 +303,24 @@ footer{
 
 	#submit{
 		width: 180px
+	}
+
+	.error-display{
+		margin-top: 25px;
+		margin-bottom: 30px;
+		color: #B1663C;
+		font-weight: 600;
+		font-size: large;
+		max-height: 150px;
+		overflow: auto;
+		padding: 20px;
+	}
+
+	.error-display p{
+		margin-bottom: 10px;
+	}
+
+	.hidden{
+		display: none;
 	}
 

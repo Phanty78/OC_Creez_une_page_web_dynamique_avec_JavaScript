@@ -5,11 +5,13 @@ password: S0phie
 */
 
 const logInForm = document.querySelector(".login-form")
+const errorDisplayZone = document.querySelector(".error-display")
 
 //La fonction etLogInInformations écoute l'événement submit du formulaire et récupère les valeurs de email et password
 
-async function getLogInInformations(email,password) {
-    logInForm.addEventListener("submit", (event) =>{
+async function getLogInInformations() {
+    // La fonction qui englobe postLogin doit également être async sinon postLogin me retourne une promesse
+    logInForm.addEventListener("submit", async (event) =>{
 
         // Cette ligne de code empéche le rechargement de la page qui est le comportement par default du bouton submit du formulaire
         event.preventDefault();
@@ -17,11 +19,9 @@ async function getLogInInformations(email,password) {
         const email = document.getElementById("email").value
         const password = document.getElementById("password").value
 
-        if (email === undefined || email === null) {
-            throw new Error('L\'e-mail est undefined ou null.');
-        }
-
-        postLogIn(email,password)
+        // On appel la fonction postLogin afin d'envoyer nos variables à l'API pour récupérer le token d'identification.
+       let token = await postLogIn(email,password)
+       console.log(token)
 
     })
 
@@ -37,12 +37,11 @@ async function postLogIn(email,password) {
       }
 
       const requestOption = {
-        method : 'POST',
-        header : {
-            'accept': 'application/json',
+        method: 'POST',
+        headers: {
             'Content-Type': 'application/json',
         },
-        body : JSON.stringify(postData)
+        body: JSON.stringify(postData),
       }
     
     try {
@@ -56,14 +55,17 @@ async function postLogIn(email,password) {
         } else {
 
             const responseData = await apiPostLogIn.json();
-            console.log(responseData);
+            return  responseData.token
             
         }
         
     } catch (error) {
 
         console.error('An error was encounter during the API execution : ',error)
-        
+        const errorMessage = document.createElement("p")
+        errorMessage.textContent= "Mauvais identifiant ou mauvais mot de passe"
+        errorDisplayZone.classList.remove("hidden")
+        errorDisplayZone.appendChild(errorMessage)
     }
 
 }

@@ -16,8 +16,16 @@ async function getLogInInformations() {
         // Cette ligne de code empéche le rechargement de la page qui est le comportement par default du bouton submit du formulaire
         event.preventDefault();
 
-        const email = document.getElementById("email").value
-        const password = document.getElementById("password").value
+        // On reinitialise l'affichage de la zone d'erreur errorDisplayZone
+        errorDisplayZone.innerHTML = ""
+
+        //Challenge Pascal : créer un console.log en forme de form en utilisant event.target
+        console.log(`
+        ${event.target.querySelector("#email-label").textContent} :${event.target.querySelector("#email").value}
+        ${event.target.querySelector("#password-label").textContent} :${event.target.querySelector("#password").value}
+                `)
+        const email = event.target.querySelector("#email").value
+        const password = event.target.querySelector("#password").value
 
         // On appel la fonction postLogin afin d'envoyer nos variables à l'API pour récupérer le token d'identification.
        let token = await postLogIn(email,password)
@@ -48,24 +56,40 @@ async function postLogIn(email,password) {
 
         const apiPostLogIn = await fetch("http://localhost:5678/api/users/login",requestOption)
 
-        if (!apiPostLogIn.ok) {
 
+        if (!apiPostLogIn.ok) {
+            
+
+            // Gestion des erreurs d'envoie des informations à l'API
+            if (apiPostLogIn.status == 401) {
+                const errorMessage = document.createElement("p")
+                errorMessage.textContent= ` ${apiPostLogIn.status} : Connection non autorisée`
+                errorDisplayZone.classList.remove("hidden")
+                errorDisplayZone.appendChild(errorMessage)
+            } else if(apiPostLogIn.status == 404) {
+                const errorMessage = document.createElement("p")
+                errorMessage.textContent= ` ${apiPostLogIn.status} : Utilisateur inconnus`
+                errorDisplayZone.classList.remove("hidden")
+                errorDisplayZone.appendChild(errorMessage)
+            }
+
+            // le mot clé throw provoque une interuption du code et doit être placé en dernier dans la condition
             throw new Error(`Response has fail with the status ${apiPostLogIn.status}`)
+
             
         } else {
 
             const responseData = await apiPostLogIn.json();
             return  responseData.token
             
+            // a la place d'un return stocker le token "cours : Sauvegardez les données dans le localStorage"
+            // local storage puis redirection vers index.html 
+            // dans script.js on lance le editor mode
         }
         
     } catch (error) {
 
         console.error('An error was encounter during the API execution : ',error)
-        const errorMessage = document.createElement("p")
-        errorMessage.textContent= "Mauvais identifiant ou mauvais mot de passe"
-        errorDisplayZone.classList.remove("hidden")
-        errorDisplayZone.appendChild(errorMessage)
     }
 
 }

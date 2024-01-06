@@ -25,7 +25,7 @@ async function getWorks(){
             const category = await callCategoryApi()
 
             //On crée un objet Set afin de compter le nombre d'élément avec un id unique présent dans l'objet category
-            const categorySet = new Set();
+            const categorySet = new Set(); // A remplacer par create.filterButton de category
 
             for (let i = 0; i < category.length; i++) {
                 categorySet.add(category[i].name)
@@ -58,7 +58,8 @@ async function getWorks(){
             }
 
         }catch(error){
-        console.error('An error was encounter during the API execution : ',error)
+            alert("La connexion a échoué.")
+            console.error('An error was encounter during the API execution : ',error)
     }
 }
 
@@ -86,7 +87,7 @@ function createFiltersButton(arrayWorksSet){
     for (let i = 0; i < arrayWorksSet.length; i++) {
         const liElement = document.createElement("li")
         liElement.classList.add("filter")
-        liElement.setAttribute("data-li-id", i+1)
+        liElement.setAttribute("data-li-id", i+1) //A remplacer par l'id venant de l'API
         liElement.textContent = arrayWorksSet[i]
         filtersContainer.appendChild(liElement)      
     }

@@ -98,9 +98,13 @@ nav ul {
 }
 
 nav li a {
-	padding: 0 10px;
+	padding: 0 20px;
 	font-size: 1.2em;
 	color: black;
+}
+
+nav li img {
+	margin-left: 30px;
 }
 
 li a {
@@ -262,7 +266,6 @@ footer{
 .login-main-container{
 	display: flex;
 	flex-direction: column;
-	justify-content: center;
 	align-items: center;
 	width: 50%;
 	margin: auto;
@@ -272,8 +275,6 @@ footer{
 .login-form{
 	display: flex;
 	flex-direction: column;
-	justify-content: center;
-	align-items: center;
 	text-align: left;
 	margin-top:30px;
 	width: 100%;
@@ -301,6 +302,16 @@ footer{
 	text-decoration-line: underline;
 	}
 
+.login-form label{
+	color: #3D3D3D;
+	font-size: 14px;
+	font-style: normal;
+	font-weight: 500;
+	line-height: normal;
+}
+
+
+
 	#submit{
 		width: 180px
 	}
@@ -322,5 +333,9 @@ footer{
 
 	.hidden{
 		display: none;
+	}
+
+	.login-main-container a{
+		margin-bottom: 150px;
 	}
 

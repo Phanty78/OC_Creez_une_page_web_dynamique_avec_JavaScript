@@ -21,16 +21,16 @@ async function getLogInInformations() {
 
         //Challenge Pascal : créer un console.log en forme de form en utilisant event.target
         console.log(`
-        ${event.target.querySelector("#email-label").textContent} :${event.target.querySelector("#email").value}
-        ${event.target.querySelector("#password-label").textContent} :${event.target.querySelector("#password").value}
+        ${event.target.querySelector("#email-label").textContent} : ${event.target.querySelector("#email").value}
+        ${event.target.querySelector("#password-label").textContent} : ${event.target.querySelector("#password").value}
                 `)
         const email = event.target.querySelector("#email").value
         const password = event.target.querySelector("#password").value
 
         // On appel la fonction postLogin afin d'envoyer nos variables à l'API pour récupérer le token d'identification.
        let token = await postLogIn(email,password)
-       console.log(token)
-
+       window.localStorage.setItem("token", token)
+       window.location.href = "index.html"
     })
 
 }

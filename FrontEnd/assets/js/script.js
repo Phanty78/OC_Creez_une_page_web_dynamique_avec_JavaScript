@@ -2,6 +2,7 @@
 
 const gallery = document.querySelector(".gallery")
 const filtersContainer = document.querySelector(".filter-container")
+const editorModeBanner = document.querySelector(".editor-mode-banner")
 let filters = []
 
 // Fonction d'affichage des travaux
@@ -34,7 +35,7 @@ async function getWorks(){
             //convertion en array de l'objet Set
             const arrayCategorySet = Array.from(categorySet);
 
-            createFiltersButton(arrayCategorySet)
+            createFiltersButton(arrayCategorySet,category)
 
             filters = document.querySelectorAll(".filter")
 
@@ -83,12 +84,12 @@ function displayWorks(worksToDisplay){
 
 // Fonction de création des bouttons filtres
 
-function createFiltersButton(arrayWorksSet){
-    for (let i = 0; i < arrayWorksSet.length; i++) {
+function createFiltersButton(arrayCategorySet,category){
+    for (let i = 0; i < arrayCategorySet.length; i++) {
         const liElement = document.createElement("li")
         liElement.classList.add("filter")
-        liElement.setAttribute("data-li-id", i+1) //A remplacer par l'id venant de l'API
-        liElement.textContent = arrayWorksSet[i]
+        liElement.setAttribute("data-li-id", category[i].id) 
+        liElement.textContent = arrayCategorySet[i]
         filtersContainer.appendChild(liElement)      
     }
 }
@@ -133,6 +134,20 @@ async function callCategoryApi() {
     }
     
 }
+
+// Mode editeur
+
+const token = window.localStorage.getItem("token")
+
+if (token !== null) {
+    
+    editorModeBanner.classList.remove("hidden")
+
+}else{
+
+    
+}
+
 
 
 

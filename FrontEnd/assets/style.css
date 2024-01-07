@@ -339,3 +339,20 @@ footer{
 		margin-bottom: 150px;
 	}
 
+
+	/************* Editor mode*******************/
+
+	.editor-mode-banner{
+		width: 100%;
+		height: 59px;
+		background-color: black;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		gap: 11.42px;
+		color: white;
+		text-align: center;
+		font-size: 16px;
+		font-weight: 400;
+	}
+

@@ -29,8 +29,11 @@ async function getLogInInformations() {
 
         // On appel la fonction postLogin afin d'envoyer nos variables à l'API pour récupérer le token d'identification.
        let token = await postLogIn(email,password)
-       window.localStorage.setItem("token", token)
-       window.location.href = "index.html"
+       if (token !== undefined && token !== null) {
+            window.localStorage.setItem("token", token)
+            window.location.href = "index.html"
+       }
+       
     })
 
 }
@@ -82,9 +85,6 @@ async function postLogIn(email,password) {
             const responseData = await apiPostLogIn.json();
             return  responseData.token
             
-            // a la place d'un return stocker le token "cours : Sauvegardez les données dans le localStorage"
-            // local storage puis redirection vers index.html 
-            // dans script.js on lance le editor mode
         }
         
     } catch (error) {

@@ -119,6 +119,7 @@ li a:hover {
 #introduction {
 	display: flex;
 	align-items: center;
+	margin-bottom: 100px;
 }
 #introduction figure {
 	flex: 1
@@ -373,4 +374,8 @@ footer{
 
 .hidden{
 	display: none;
+}
+
+.more-margin{
+	margin-bottom: 100px;
 }

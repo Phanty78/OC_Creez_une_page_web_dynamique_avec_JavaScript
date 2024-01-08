@@ -362,7 +362,7 @@ footer{
 	margin-bottom: 1em;
 }
 
-.edition-button{
+.edition-button a{
 	display: flex;
 	justify-content: center;
 	align-items: center;
@@ -370,12 +370,52 @@ footer{
 	color: #000;
 	font-size: 14px;
 	font-weight: 400;
+	text-decoration: none;
 }
 
-.hidden{
-	display: none;
+.edition-button a:hover{
+	font-weight: 700;
 }
+
 
 .more-margin{
 	margin-bottom: 100px;
+}
+
+/************* Modal *******************/
+
+.class-modal{
+	position: fixed;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	top: 0px;
+	left: 0px;
+	width: 100%;
+	height: 100%;
+	background:  rgba(0, 0, 0, 0.8);
+}
+
+.modal-wrapper{
+	background-color: #FFFFFF;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	gap: 30px;
+	max-width: 630px;
+	overflow: auto;
+	padding: 10px;
+}
+
+.modal-wrapper a{
+	align-self: flex-end;
+}
+
+
+
+/************* Hidden *******************/
+
+.hidden{
+	display: none;
 }

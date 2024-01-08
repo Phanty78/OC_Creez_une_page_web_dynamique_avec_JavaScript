@@ -80,55 +80,6 @@ async function getWorks(){ // Fonction de récupération et d'appel d'affichage 
     }
 }
 
-/*
-async function getWorks(){ // Fonction d'affichage des travaux
-
-    let filteredWorks = []
-
-    try{
-        const apiResponse = await fetch("http://localhost:5678/api/works")
-
-        if (!apiResponse.ok) {
-
-            throw new Error(`Response has fail with the status ${apiResponse.status}`)
-
-        }else{
-
-            const works = await apiResponse.json()
-
-            // On fait appel à la fonction callCategoryApi pour récupérer le tableau des catégories existantes
-            const category = await callCategoryApi()
-
-            createFiltersButton(category)
-
-            filters = document.querySelectorAll(".filter")
-
-            // Premier appel à displayWorks pour afficher les travaux lors du première affichage de la page
-            displayWorks(works)
-
-            for (let i = 0; i < filters.length; i++) {
-                filters[i].addEventListener("click", (event) => {
-                    if (event.target.id === "all-filter") {
-                        addOrRemoveClassSelected(event.target,filters)
-                        gallery.innerHTML = ""
-                        displayWorks(works)
-                    }else{
-                        addOrRemoveClassSelected(event.target,filters)
-                        filteredWorks = works.filter((work) => work.category.id === parseInt(event.target.dataset.liId ))
-                        gallery.innerHTML = ""
-                        displayWorks(filteredWorks)
-                    }
-                    
-                })
-            }
-
-            }
-
-        }catch(error){
-            alert("La connexion a échoué.")
-            console.error('An error was encounter during the API execution : ',error)
-    }
-}*/
 
 function createCategorySet(category){
     //On crée un objet Set afin de compter le nombre d'élément avec un id unique présent dans l'objet category

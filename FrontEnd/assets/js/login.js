@@ -1,9 +1,3 @@
-/*
-email: sophie.bluel@test.tld
-
-password: S0phie 
-*/
-
 const logInForm = document.querySelector(".login-form")
 const errorDisplayZone = document.querySelector(".error-display")
 
@@ -15,10 +9,8 @@ async function getLogInInformations() {
 
         // Cette ligne de code empéche le rechargement de la page qui est le comportement par default du bouton submit du formulaire
         event.preventDefault();
-
         // On reinitialise l'affichage de la zone d'erreur errorDisplayZone
         errorDisplayZone.innerHTML = ""
-
         //Challenge Pascal : créer un console.log en forme de form en utilisant event.target
         console.log(`
         ${event.target.querySelector("#email-label").textContent} : ${event.target.querySelector("#email").value}
@@ -31,22 +23,18 @@ async function getLogInInformations() {
        let token = await postLogIn(email,password)
        if (token !== undefined && token !== null) {
             window.localStorage.setItem("token", token)
-            window.location.href = "index.html"
-       }
-       
+            window.location.href = "./index.html"
+       }    
     })
-
 }
 
 // La fonction postLogIn envoi à l'API l'email et le mot de passe de l'utilisateur et en cas de réponse favorable envoi le token de connexion , sinon un message d'erreur.
 
 async function postLogIn(email,password) {
-
     const postData = {
         "email": email,
         "password": password
       }
-
       const requestOption = {
         method: 'POST',
         headers: {
@@ -56,42 +44,26 @@ async function postLogIn(email,password) {
       }
     
     try {
-
         const apiPostLogIn = await fetch("http://localhost:5678/api/users/login",requestOption)
-
-
-        if (!apiPostLogIn.ok) {
-            
-
+        if (!apiPostLogIn.ok) {     
             // Gestion des erreurs d'envoie des informations à l'API
-            if (apiPostLogIn.status == 401) {
-                const errorMessage = document.createElement("p")
-                errorMessage.textContent= ` ${apiPostLogIn.status} : Connection non autorisée`
-                errorDisplayZone.classList.remove("hidden")
-                errorDisplayZone.appendChild(errorMessage)
+            const errorMessage = document.createElement("p")
+            if (apiPostLogIn.status == 401) {          
+                errorMessage.textContent= `Connexion non autorisée`              
             } else if(apiPostLogIn.status == 404) {
-                const errorMessage = document.createElement("p")
-                errorMessage.textContent= ` ${apiPostLogIn.status} : Utilisateur inconnus`
-                errorDisplayZone.classList.remove("hidden")
-                errorDisplayZone.appendChild(errorMessage)
+                errorMessage.textContent= `Utilisateur inconnu`
             }
-
+            errorDisplayZone.classList.remove("hidden")
+            errorDisplayZone.appendChild(errorMessage)
             // le mot clé throw provoque une interuption du code et doit être placé en dernier dans la condition
-            throw new Error(`Response has fail with the status ${apiPostLogIn.status}`)
-
-            
+            throw new Error(`Response has fail with the status ${apiPostLogIn.status}`)    
         } else {
-
             const responseData = await apiPostLogIn.json();
-            return  responseData.token
-            
-        }
-        
+            return  responseData.token       
+        }  
     } catch (error) {
-
         console.error('An error was encounter during the API execution : ',error)
     }
-
 }
 
 getLogInInformations()

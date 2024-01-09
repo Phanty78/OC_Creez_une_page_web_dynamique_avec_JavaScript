@@ -413,12 +413,79 @@ footer{
 	gap: 30px;
 	max-width: 630px;
 	overflow: auto;
-	padding: 10px;
+	padding: 26px 105px 45px 105px;
+	border-radius: 10px;
 }
 
 .modal-wrapper a{
 	align-self: flex-end;
 }
+
+.modal-wrapper a:visited{
+	color: #3D3D3D;
+}
+
+.modal-wrapper a:active{
+	color: #3D3D3D;
+}
+
+.modal-gallery{
+	width: 100%;
+	display: grid;
+	grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+	grid-column-gap: 6px;
+	grid-row-gap: 25px;
+}
+
+.modal-gallery figure{
+	max-width: 78px;
+	max-height: 104px;
+	position: relative;
+}
+
+.modal-gallery img{
+	max-width: 78px;
+	height: 104px;
+	position: relative;
+	z-index: 1;
+}
+
+.trash-button{
+	background-color: #000;
+	width: 17px;
+	height: 17px;
+	border-radius: 2px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	cursor: pointer;
+	position: absolute;
+	top: 6px;
+	right: 6px;
+	z-index: 2;
+}
+
+
+.modal-separator{
+	border: 1px solid #B3B3B3;
+	width: 420px;
+}
+
+.submit-button{
+	font-family: 'Syne';
+	font-weight: 700;
+	color: white;
+	background-color: #1D6154;
+	text-align: center;
+	border-radius: 60px ;
+	height: 50px;
+	font-size: 1.2em;
+	border: none;
+	box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.09);
+	padding: 0 20px ;
+}
+
+
 
 
 
@@ -427,3 +494,4 @@ footer{
 .hidden{
 	display: none;
 }
+

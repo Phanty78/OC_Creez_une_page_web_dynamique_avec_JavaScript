@@ -11,8 +11,9 @@ let filters = []
 //Récupération des éléments de la DOM pour la modal
 
 const modalLinks = document.querySelectorAll('a[href="#modal"]')
-const closeModalButton = document.querySelector(".modal-wrapper a")
+const closeModalButtons = document.querySelectorAll(".modal-wrapper a")
 const modalGallery = document.querySelector(".modal-gallery")
+const modalWindows = document.querySelectorAll(".class-modal")
 
 
 // Si le token de connexion existe dans le local storage alors on le stocke dans la variable token
@@ -141,6 +142,7 @@ async function callCategoryApi() { // Fonction d'appel à l'API pour récupérer
 
 // Code Modal
 
+// Appel a l'API pour l'affichage des travaux dans la modal
 async function getWorksForModal(){
     try {
         const APIResponse = await fetch("http://localhost:5678/api/works")
@@ -155,6 +157,7 @@ async function getWorksForModal(){
     }
 }
 
+// Affichage des travaux dans la modal et construction des éléments de supression
 function displayWorksInGallery(worksToDisplay){
     for (let i = 0; i < worksToDisplay.length; i++) {
         const figureElement = document.createElement("figure")
@@ -164,6 +167,7 @@ function displayWorksInGallery(worksToDisplay){
     }
 }
 
+// Fonction de gestion des evenements lors de l'appui sur le bouton de suppresion d'un work via la modale
 async function removeWork(trashButtonsNodeList) {
     for (let i = 0; i < trashButtonsNodeList.length; i++) {
         trashButtonsNodeList[i].addEventListener("click", async event => {
@@ -175,6 +179,7 @@ async function removeWork(trashButtonsNodeList) {
     }
 }
 
+// Fonction de suppresion d'un work, renvoie une erreur pour le moment
 async function deletework(workId,tokenBearer) {
     const deleteRequestOption = {
         method : 'DELETE',
@@ -183,7 +188,6 @@ async function deletework(workId,tokenBearer) {
             'Content-Type':'application/json',
         }
     }
-
     try {
         const deleteWorkAPIResponse = await fetch(`http://localhost:5678/api/works/${workId}`, deleteRequestOption)
         if (!deleteWorkAPIResponse.ok) {
@@ -192,38 +196,72 @@ async function deletework(workId,tokenBearer) {
         const deletedWorkData = await deleteWorkAPIResponse.json()
         console.log("delete ok")
         return deletedWorkData
-
+        // Il faudra ajouter le code pour masquet l'élément work supprimé sans avoir à recharger la page
     } catch (error) {
         alert("Une erreur est survenu durant la tentative de supression.")
         console.error('An error was encounter during the API execution : ',error)
     }
 }
 
-for (let i = 0; i < modalLinks.length; i++) {
-    if (modalLinks) {
+function OpenAddWorkModal(){
+    document.getElementById("modal").classList.add("hidden")
+    document.getElementById("modal").setAttribute("aria-hidden", true)
+    document.getElementById("modal").removeAttribute("aria-modal")
+    document.getElementById("add-work-modal").classList.remove("hidden")
+    document.getElementById("add-work-modal").setAttribute("aria-hidden", false)
+    document.getElementById("add-work-modal").setAttribute("aria-modal", true)
+
+}
+
+if (modalLinks) {
+    for (let i = 0; i < modalLinks.length; i++) {
         modalLinks[i].addEventListener("click",async (event)=>{
+            const addNewWorkButton = document.querySelector(".modal-wrapper button")
             event.preventDefault()
-            document.querySelector(".class-modal").classList.remove("hidden")
+            document.getElementById("modal").classList.remove("hidden")
             document.getElementById("modal").setAttribute("aria-hidden", false)
             document.getElementById("modal").setAttribute("aria-modal", true)
             const worksForModal = await getWorksForModal()
-            console.log(worksForModal)
             displayWorksInGallery(worksForModal)
             const trashButtons = document.querySelectorAll("figure .trash-button")
             removeWork(trashButtons)
+            addNewWorkButton.addEventListener("click", (event)=>{
+            OpenAddWorkModal()
+            })
+            
         })
-    }
+}
 }
 
-if (closeModalButton) {
-    closeModalButton.addEventListener("click", (event)=> {
-        event.preventDefault()
-        document.querySelector(".class-modal").classList.add("hidden")
-        document.getElementById("modal").setAttribute("aria-hidden", true)
-        document.getElementById("modal").removeAttribute("aria-modal")
-        modalGallery.innerHTML = ""
-    })
-    
+// Fonction de fermetue des modals par le bouton X
+if (closeModalButtons) {
+    for (let i = 0; i < closeModalButtons.length; i++) {
+        closeModalButtons[i].addEventListener("click", (event)=> {
+            event.preventDefault()
+            const modalNodes = document.querySelectorAll(".class-modal")
+            for (let i = 0; i < modalNodes.length; i++) {
+                modalNodes[i].classList.add("hidden")
+                modalNodes[i].setAttribute("aria-hidden", true)
+                modalNodes[i].removeAttribute("aria-modal")
+            }
+            modalGallery.innerHTML = ""
+        })   
+    }   
+}
+
+// Fonction de fermeture des modals quand l'utilisateur clique en dehors de celle ci
+if (modalWindows) {
+    for (let i = 0; i < modalWindows.length; i++) {
+        window.addEventListener("click", (event) =>{
+            if (event.target === modalWindows[i]) {
+                event.preventDefault()
+                modalWindows[i].classList.add("hidden")
+                modalWindows[i].setAttribute("aria-hidden", true)
+                modalWindows[i].removeAttribute("aria-modal")
+                modalGallery.innerHTML = ""
+            }
+        })
+    }
 }
 
 chooseMode()

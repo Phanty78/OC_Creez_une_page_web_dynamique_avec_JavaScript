@@ -11,7 +11,7 @@ let filters = []
 //Récupération des éléments de la DOM pour la modal
 
 const modalLinks = document.querySelectorAll('a[href="#modal"]')
-const closeModalButtons = document.querySelectorAll(".modal-wrapper a")
+const closeModalButtons = document.querySelectorAll(".close-modal-button")
 const modalGallery = document.querySelector(".modal-gallery")
 const modalWindows = document.querySelectorAll(".class-modal")
 
@@ -203,14 +203,28 @@ async function deletework(workId,tokenBearer) {
     }
 }
 
-function OpenAddWorkModal(){
+// Fonction d'ouverture de la modal d'ajout de travaux et de fermeture de celle de supression des travaux
+function OpenAddWorkModal(){  
     document.getElementById("modal").classList.add("hidden")
     document.getElementById("modal").setAttribute("aria-hidden", true)
     document.getElementById("modal").removeAttribute("aria-modal")
     document.getElementById("add-work-modal").classList.remove("hidden")
     document.getElementById("add-work-modal").setAttribute("aria-hidden", false)
     document.getElementById("add-work-modal").setAttribute("aria-modal", true)
+    ReturnToPreviousModal()
+}
 
+// Fonction de retour à la fenêtre modal précédente
+function ReturnToPreviousModal() {
+    const returnButton = document.querySelector(".return-button")
+    returnButton.addEventListener("click", (event) =>{
+        document.getElementById("add-work-modal").classList.add("hidden")
+        document.getElementById("add-work-modal").setAttribute("aria-hidden", true)
+        document.getElementById("add-work-modal").removeAttribute("aria-modal")
+        document.getElementById("modal").classList.remove("hidden")
+        document.getElementById("modal").setAttribute("aria-hidden", false)
+        document.getElementById("modal").setAttribute("aria-modal", true)
+        })
 }
 
 if (modalLinks) {

@@ -485,8 +485,47 @@ footer{
 	padding: 0 20px ;
 }
 
+.modal-nav-bar{
+	width: 100%;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
 
+.title-modal-black{
+	color: #000;
+	font-family: Work Sans;
+	font-size: 26px;
+	font-style: normal;
+	font-weight: 400;
+	line-height: normal;
+}
 
+.AddImageZone{
+	background-color: #E8F1F6;
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-self: center;
+	text-align: center;
+	gap: 6px;
+	padding-top: 13px;
+	padding-bottom: 19px;
+}
+
+.add-photo-button{
+	height: 50px;
+	font-size: 1.2em;
+	border: none;
+	font-family: 'syne';
+	color: #306685;
+	background-color: #CBD6DC;
+	padding: 10px 33px;
+	border-radius: 60px;
+	margin: auto;
+
+}
 
 
 /************* Hidden *******************/

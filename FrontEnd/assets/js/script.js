@@ -14,6 +14,7 @@ const modalLinks = document.querySelectorAll('a[href="#modal"]')
 const closeModalButton = document.querySelector(".modal-wrapper a")
 const modalGallery = document.querySelector(".modal-gallery")
 
+
 // Si le token de connexion existe dans le local storage alors on le stocke dans la variable token
 
 const token = window.localStorage.getItem("token")
@@ -150,41 +151,53 @@ async function getWorksForModal(){
         }
     } catch (error) {
         alert("La connexion a l'API a échoué pour le chargement de la modal.")
-            console.error('An error was encounter during the API execution : ',error)
+        console.error('An error was encounter during the API execution : ',error)
     }
 }
-
-/*
-function displayWorksInGallery(worksToDisplay){ // Fonction d'affichage des travaux
-    for (let i = 0; i < worksToDisplay.length; i++) {
-        const figureElement = document.createElement("figure")
-        const imageElement = document.createElement("img")
-        const trashBackgroundElement = document.createElement("div")
-        trashBackgroundElement.classList.add("trash-backgroound-element")
-        const trashIcon = document.createElement("i")
-        trashIcon.classList.add("fa-solid")
-        trashIcon.classList.add("fa-trash-can")
-        trashIcon.style.color = "white"
-        figureElement.setAttribute("data-category-id", worksToDisplay[i].category.id);
-        imageElement.src = worksToDisplay[i].imageUrl
-        imageElement.alt = worksToDisplay[i].title
-        figureElement.appendChild(trashBackgroundElement)
-        figureElement.appendChild(trashIcon)
-        figureElement.appendChild(imageElement)
-        modalGallery.appendChild(figureElement)
-    }
-}
-*/
 
 function displayWorksInGallery(worksToDisplay){
     for (let i = 0; i < worksToDisplay.length; i++) {
         const figureElement = document.createElement("figure")
-        figureElement.innerHTML = `<img src="${worksToDisplay[i].imageUrl}" alt="${worksToDisplay[i].title}"><div class="trash-button"><i class="fa-solid fa-trash-can" style="color: #ffffff;"></i></div>`
+        figureElement.innerHTML = `<img src="${worksToDisplay[i].imageUrl}" alt="${worksToDisplay[i].title}"><div class="trash-button"><i class="fa-solid fa-trash-can" data-work-id="${worksToDisplay[i].id}" style="color: #ffffff;"></i></div>`
         figureElement.setAttribute("data-category-id", worksToDisplay[i].category.id);
         modalGallery.appendChild(figureElement)
     }
 }
 
+async function removeWork(trashButtonsNodeList) {
+    for (let i = 0; i < trashButtonsNodeList.length; i++) {
+        trashButtonsNodeList[i].addEventListener("click", async event => {
+            event.preventDefault()
+            console.log(token)
+            console.log(event.target.dataset.workId)
+           deletework(event.target.dataset.workId,token)
+        } )
+    }
+}
+
+async function deletework(workId,tokenBearer) {
+    const deleteRequestOption = {
+        method : 'DELETE',
+        headers : {
+            'Authorization' : `Bearer ${tokenBearer}`,
+            'Content-Type':'application/json',
+        }
+    }
+
+    try {
+        const deleteWorkAPIResponse = await fetch(`http://localhost:5678/api/works/${workId}`, deleteRequestOption)
+        if (!deleteWorkAPIResponse.ok) {
+            throw new Error (`Response has fail with the status ${apiResponse.status}`)
+        }
+        const deletedWorkData = await deleteWorkAPIResponse.json()
+        console.log("delete ok")
+        return deletedWorkData
+
+    } catch (error) {
+        alert("Une erreur est survenu durant la tentative de supression.")
+        console.error('An error was encounter during the API execution : ',error)
+    }
+}
 
 for (let i = 0; i < modalLinks.length; i++) {
     if (modalLinks) {
@@ -196,6 +209,8 @@ for (let i = 0; i < modalLinks.length; i++) {
             const worksForModal = await getWorksForModal()
             console.log(worksForModal)
             displayWorksInGallery(worksForModal)
+            const trashButtons = document.querySelectorAll("figure .trash-button")
+            removeWork(trashButtons)
         })
     }
 }

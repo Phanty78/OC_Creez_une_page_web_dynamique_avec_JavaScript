@@ -1,8 +1,17 @@
+import {callCategoryApi} from "./script.js"
+
 //Récupération des éléments de la DOM pour la modal
 const modalLinks = document.querySelectorAll('a[href="#modal"]')
 const closeModalButtons = document.querySelectorAll(".close-modal-button")
 const modalGallery = document.querySelector(".modal-gallery")
 const modalWindows = document.querySelectorAll(".class-modal")
+const addWorkSubmitButton = document.querySelector(".add-work-form-button")
+const selectInput = document.querySelector(".select-input")
+const titleInput = document.getElementById("title")
+const imageLoad = document.getElementById("load-image")
+const addWorkForm = document.querySelector(".add-work-form")
+
+const token = window.localStorage.getItem("token")
 
 // Appel a l'API pour l'affichage des travaux dans la modal
 async function getWorksForModal(){
@@ -65,6 +74,8 @@ async function deletework(workId,tokenBearer) {
 function OpenAddWorkModal(){
     closeModal(document.getElementById("modal"))
     openModal(document.getElementById("add-work-modal"))
+    fillFormSelect(selectInput)
+    enabledSubmitButton(addWorkSubmitButton,titleInput,selectInput,imageLoad,addWorkForm)
     ReturnToPreviousModal()
 }
 
@@ -74,6 +85,7 @@ function ReturnToPreviousModal() {
     returnButton.addEventListener("click", (event) =>{
         closeModal(document.getElementById("add-work-modal"))
         openModal(document.getElementById("modal"))
+        selectInput.innerHTML = ""
         })
 }
 
@@ -106,6 +118,7 @@ if (closeModalButtons) {
             for (let i = 0; i < modalNodes.length; i++) {
                 closeModal(modalNodes[i],modalGallery)
                 modalGallery.innerHTML = ""
+                selectInput.innerHTML = ""
             }
         })   
     }   
@@ -119,6 +132,8 @@ if (modalWindows) {
                 event.preventDefault()
                 closeModal(modalWindows[i])
                 modalGallery.innerHTML = ""
+                selectInput.innerHTML = ""
+                console.log("nettoyage !")
             }
         })
     }
@@ -128,7 +143,7 @@ if (modalWindows) {
 function closeModal(modal) {
     modal.classList.add("hidden")
     modal.setAttribute("aria-hidden", true)
-    modal.removeAttribute("aria-modal")   
+    modal.removeAttribute("aria-modal")
 }
 
 // Fonction d'ouverture des modals
@@ -137,3 +152,26 @@ function openModal(modal) {
     modal.setAttribute("aria-hidden", false)
     modal.setAttribute("aria-modal", true)
 }
+
+
+// Fonction de remplissage des categories dans la modal Ajout photo
+async function fillFormSelect(selectInput) {
+    const categories = await callCategoryApi()
+    for (let i = 0; i < categories.length; i++) {
+        const optionElement = document.createElement("option")
+        optionElement.setAttribute("value", categories[i].name )
+        optionElement.textContent = categories[i].name 
+        selectInput.appendChild(optionElement)
+    }
+}
+
+// Cette fonction vérifie que tous les chams du formulaire sont remplis à chaque changement dans le formulaire
+function enabledSubmitButton(button,titleInput,selectInput,imageLoad,form) {
+    form.addEventListener("change", () =>{
+        console.log("changement")
+        if (titleInput.value !== null && titleInput.value !== "" && selectInput.value !== null && imageLoad !== null){
+            button.disabled = false
+        }
+    })
+}
+

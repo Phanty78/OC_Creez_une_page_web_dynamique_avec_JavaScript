@@ -107,6 +107,7 @@ async function callCategoryApi() { // Fonction d'appel à l'API pour récupérer
         console.error('An error was encounter during the API execution : ',error) 
     } 
 }
+export{callCategoryApi}
 
 chooseMode()
 

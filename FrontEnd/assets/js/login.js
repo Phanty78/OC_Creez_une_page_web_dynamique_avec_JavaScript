@@ -1,17 +1,14 @@
 const logInForm = document.querySelector(".login-form")
 const errorDisplayZone = document.querySelector(".error-display")
+const emailInput = document.getElementById("email")
+const passwordInput = document.getElementById("password")
 
 //La fonction etLogInInformations écoute l'événement submit du formulaire et récupère les valeurs de email et password
 
 async function getLogInInformations() {
-    // La fonction qui englobe postLogin doit également être async sinon postLogin me retourne une promesse
     logInForm.addEventListener("submit", async (event) =>{
-
-        // Cette ligne de code empéche le rechargement de la page qui est le comportement par default du bouton submit du formulaire
         event.preventDefault();
-        // On reinitialise l'affichage de la zone d'erreur errorDisplayZone
         errorDisplayZone.innerHTML = ""
-        
         const email = event.target.querySelector("#email").value
         const password = event.target.querySelector("#password").value
 
@@ -23,6 +20,16 @@ async function getLogInInformations() {
        }    
     })
 }
+
+function EraseErrorMesssageOnFocus(emailInput,passwordInput,displayZone){
+    emailInput.addEventListener("focus",(event) =>{
+        displayZone.innerHTML = ""
+    })
+    passwordInput.addEventListener("focus",(event) =>{
+        displayZone.innerHTML = ""
+    })
+}
+
 
 // La fonction postLogIn envoi à l'API l'email et le mot de passe de l'utilisateur et en cas de réponse favorable envoi le token de connexion , sinon un message d'erreur.
 
@@ -63,3 +70,4 @@ async function postLogIn(email,password) {
 }
 
 getLogInInformations()
+EraseErrorMesssageOnFocus(emailInput,passwordInput,errorDisplayZone)

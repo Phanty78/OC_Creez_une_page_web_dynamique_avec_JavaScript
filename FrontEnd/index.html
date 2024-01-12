@@ -9,8 +9,8 @@
 	<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Work+Sans&display=swap" rel="stylesheet">
 	<meta name="description" content="">
 	<link rel="stylesheet" href="./assets/style.css">
-	<script src="./assets/js/script.js" defer></script>
-	<script src="./assets/js/modal.js" defer></script>
+	<script src="./assets/js/script.js" type="module" defer></script>
+	<script src="./assets/js/modal.js" type="module" defer></script>
 	<script src="https://kit.fontawesome.com/21b8cc6928.js" crossorigin="anonymous"></script>
 </head>
 <body>
@@ -76,19 +76,20 @@
 				<a href="#" class="close-modal-button"><i class="fa-solid fa-x"></i></a>
 			</div>
 			<h2 class="title-modal-black">Ajout photo</h2>
-			<form method="post" action="#" enctype="multipart/form-data" class="login-form">
+			<form method="post" action="#" enctype="multipart/form-data" class="login-form add-work-form">
 				<div class="AddImageZone">
 					<i class="fa-regular fa-image fa-5x" style="color: #b9c5cc;"></i>
-					<button class="add-photo-button">+ Ajouter photo<input class="hidden" type="file"></button>	
+					<button class="add-photo-button">+ Ajouter photo<input class="hidden" id="load-image" type="file"></button>	
 					<p>jpg, png : 4mo max</p>
 				</div>
 				<label for="title">Titre</label>
-				<input type="text" name="title">
-				<label for="categoty">Catégorie</label>
-				<input type="text" name="category">
+				<input type="text" name="title" id="title" autocomplete="off" required>
+				<label for="category">Catégorie</label>
+				<select name="category" id="category" autocomplete="off" class="select-input" required></select>
+				<div class="modal-separator"></div>
+				<button class="submit-button add-work-form-button" disabled>Valider</button>
 			</form>
-			<div class="modal-separator"></div>
-			<button class="submit-button" disabled>Valider</button>
+			
 		</div>
 	</aside>
 
@@ -98,11 +99,11 @@
 		<p>Vous avez un projet ? Discutons-en !</p>
 		<form action="#" method="post">
 			<label for="name">Nom</label>
-			<input type="text" name="name" id="name">
+			<input type="text" name="name" autocomplete="name" id="name">
 			<label for="email">Email</label>
-			<input type="email" name="email" id="email">
+			<input type="email" name="email" autocomplete="email" id="email">
 			<label for="message">Message</label>
-			<textarea name="message" id="message" cols="30" rows="10"></textarea>
+			<textarea name="message" autocomplete="off" id="message" cols="30" rows="10"></textarea>
 			<input type="submit" class="submit-button" value="Envoyer">
 		</form>
 	</section>

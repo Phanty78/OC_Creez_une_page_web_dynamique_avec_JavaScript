@@ -1,4 +1,3 @@
-
 //Recupération des éléments de la DOM
 const gallery = document.querySelector(".gallery")
 const filtersContainer = document.querySelector(".filter-container")
@@ -8,16 +7,7 @@ const filterContainer = document.querySelector(".filter-container")
 const portfolioHeader = document.querySelector(".portfolio-header")
 let filters = []
 
-//Récupération des éléments de la DOM pour la modal
-
-const modalLinks = document.querySelectorAll('a[href="#modal"]')
-const closeModalButtons = document.querySelectorAll(".close-modal-button")
-const modalGallery = document.querySelector(".modal-gallery")
-const modalWindows = document.querySelectorAll(".class-modal")
-
-
 // Si le token de connexion existe dans le local storage alors on le stocke dans la variable token
-
 const token = window.localStorage.getItem("token")
 
 async function chooseMode() { // Cette fonction définit le mode à utiliser
@@ -33,32 +23,22 @@ async function chooseMode() { // Cette fonction définit le mode à utiliser
     }
     if(gallery) {
         // on verifie que gallery existe bien dans la page avant de s'en servir au sein de getWorks
-        // Bonne pratique afin d'éviter de casser le site si l'élement de la DOM ou je dois afficher les éléments n'existe pas
         getWorks()
     }
 }
 
 async function getWorks(){ // Fonction de récupération et d'appel d'affichage des travaux 
-
     let filteredWorks = []
-
     try{
         const apiResponse = await fetch("http://localhost:5678/api/works")
-
         if (!apiResponse.ok) {
-
             throw new Error(`Response has fail with the status ${apiResponse.status}`)
-
         }else{
-
             const works = await apiResponse.json()
-
             filters = document.querySelectorAll(".filter")
-
             // Premier appel à displayWorks pour afficher les travaux lors du première affichage de la page
             displayWorks(works)
             const figureElements = document.querySelectorAll(".gallery figure")
-
             for (let i = 0; i < filters.length; i++) {
                 filters[i].addEventListener("click", (event) => {
                     if (event.target.id === "all-filter") {
@@ -75,9 +55,7 @@ async function getWorks(){ // Fonction de récupération et d'appel d'affichage 
                     
                 })
             }
-
             }
-
         }catch(error){
             alert("La connexion a échoué.")
             console.error('An error was encounter during the API execution : ',error)
@@ -119,163 +97,15 @@ function addOrRemoveClassSelected(eventTarget,filters){ // Fonction d'ajout de l
 
 async function callCategoryApi() { // Fonction d'appel à l'API pour récupérer les categories
     try {
-
         const apiCategoryResponse = await fetch ("http://localhost:5678/api/categories")
-    
         if (!apiCategoryResponse.ok) {
-    
-            throw new Error(`Response has fail with the status ${apiCategoryResponse.status}`)
-            
+            throw new Error(`Response has fail with the status ${apiCategoryResponse.status}`)      
         } else {
-    
-            return apiCategoryResponse.json()
-            
-        }
-        
+            return apiCategoryResponse.json()       
+        }   
     } catch (error) {
-    
-        console.error('An error was encounter during the API execution : ',error)
-    
-    }
-    
-}
-
-// Code Modal
-
-// Appel a l'API pour l'affichage des travaux dans la modal
-async function getWorksForModal(){
-    try {
-        const APIResponse = await fetch("http://localhost:5678/api/works")
-        if (!APIResponse.ok) {
-            throw new Error (`Response has fail with the status ${apiResponse.status}`)
-        }else{
-            return (await APIResponse).json()
-        }
-    } catch (error) {
-        alert("La connexion a l'API a échoué pour le chargement de la modal.")
-        console.error('An error was encounter during the API execution : ',error)
-    }
-}
-
-// Affichage des travaux dans la modal et construction des éléments de supression
-function displayWorksInGallery(worksToDisplay){
-    for (let i = 0; i < worksToDisplay.length; i++) {
-        const figureElement = document.createElement("figure")
-        figureElement.innerHTML = `<img src="${worksToDisplay[i].imageUrl}" alt="${worksToDisplay[i].title}"><div class="trash-button"><i class="fa-solid fa-trash-can" data-work-id="${worksToDisplay[i].id}" style="color: #ffffff;"></i></div>`
-        figureElement.setAttribute("data-category-id", worksToDisplay[i].category.id);
-        modalGallery.appendChild(figureElement)
-    }
-}
-
-// Fonction de gestion des evenements lors de l'appui sur le bouton de suppresion d'un work via la modale
-async function removeWork(trashButtonsNodeList) {
-    for (let i = 0; i < trashButtonsNodeList.length; i++) {
-        trashButtonsNodeList[i].addEventListener("click", async event => {
-            event.preventDefault()
-            console.log(token)
-            console.log(event.target.dataset.workId)
-           deletework(event.target.dataset.workId,token)
-        } )
-    }
-}
-
-// Fonction de suppresion d'un work, renvoie une erreur pour le moment
-async function deletework(workId,tokenBearer) {
-    const deleteRequestOption = {
-        method : 'DELETE',
-        headers : {
-            'Authorization' : `Bearer ${tokenBearer}`,
-            'Content-Type':'application/json',
-        }
-    }
-    try {
-        const deleteWorkAPIResponse = await fetch(`http://localhost:5678/api/works/${workId}`, deleteRequestOption)
-        if (!deleteWorkAPIResponse.ok) {
-            throw new Error (`Response has fail with the status ${apiResponse.status}`)
-        }
-        const deletedWorkData = await deleteWorkAPIResponse.json()
-        console.log("delete ok")
-        return deletedWorkData
-        // Il faudra ajouter le code pour masquet l'élément work supprimé sans avoir à recharger la page
-    } catch (error) {
-        alert("Une erreur est survenu durant la tentative de supression.")
-        console.error('An error was encounter during the API execution : ',error)
-    }
-}
-
-// Fonction d'ouverture de la modal d'ajout de travaux et de fermeture de celle de supression des travaux
-function OpenAddWorkModal(){  
-    document.getElementById("modal").classList.add("hidden")
-    document.getElementById("modal").setAttribute("aria-hidden", true)
-    document.getElementById("modal").removeAttribute("aria-modal")
-    document.getElementById("add-work-modal").classList.remove("hidden")
-    document.getElementById("add-work-modal").setAttribute("aria-hidden", false)
-    document.getElementById("add-work-modal").setAttribute("aria-modal", true)
-    ReturnToPreviousModal()
-}
-
-// Fonction de retour à la fenêtre modal précédente
-function ReturnToPreviousModal() {
-    const returnButton = document.querySelector(".return-button")
-    returnButton.addEventListener("click", (event) =>{
-        document.getElementById("add-work-modal").classList.add("hidden")
-        document.getElementById("add-work-modal").setAttribute("aria-hidden", true)
-        document.getElementById("add-work-modal").removeAttribute("aria-modal")
-        document.getElementById("modal").classList.remove("hidden")
-        document.getElementById("modal").setAttribute("aria-hidden", false)
-        document.getElementById("modal").setAttribute("aria-modal", true)
-        })
-}
-
-if (modalLinks) {
-    for (let i = 0; i < modalLinks.length; i++) {
-        modalLinks[i].addEventListener("click",async (event)=>{
-            const addNewWorkButton = document.querySelector(".modal-wrapper button")
-            event.preventDefault()
-            document.getElementById("modal").classList.remove("hidden")
-            document.getElementById("modal").setAttribute("aria-hidden", false)
-            document.getElementById("modal").setAttribute("aria-modal", true)
-            const worksForModal = await getWorksForModal()
-            displayWorksInGallery(worksForModal)
-            const trashButtons = document.querySelectorAll("figure .trash-button")
-            removeWork(trashButtons)
-            addNewWorkButton.addEventListener("click", (event)=>{
-            OpenAddWorkModal()
-            })
-            
-        })
-}
-}
-
-// Fonction de fermetue des modals par le bouton X
-if (closeModalButtons) {
-    for (let i = 0; i < closeModalButtons.length; i++) {
-        closeModalButtons[i].addEventListener("click", (event)=> {
-            event.preventDefault()
-            const modalNodes = document.querySelectorAll(".class-modal")
-            for (let i = 0; i < modalNodes.length; i++) {
-                modalNodes[i].classList.add("hidden")
-                modalNodes[i].setAttribute("aria-hidden", true)
-                modalNodes[i].removeAttribute("aria-modal")
-            }
-            modalGallery.innerHTML = ""
-        })   
-    }   
-}
-
-// Fonction de fermeture des modals quand l'utilisateur clique en dehors de celle ci
-if (modalWindows) {
-    for (let i = 0; i < modalWindows.length; i++) {
-        window.addEventListener("click", (event) =>{
-            if (event.target === modalWindows[i]) {
-                event.preventDefault()
-                modalWindows[i].classList.add("hidden")
-                modalWindows[i].setAttribute("aria-hidden", true)
-                modalWindows[i].removeAttribute("aria-modal")
-                modalGallery.innerHTML = ""
-            }
-        })
-    }
+        console.error('An error was encounter during the API execution : ',error) 
+    } 
 }
 
 chooseMode()

@@ -11,11 +11,7 @@ async function getLogInInformations() {
         event.preventDefault();
         // On reinitialise l'affichage de la zone d'erreur errorDisplayZone
         errorDisplayZone.innerHTML = ""
-        //Challenge Pascal : créer un console.log en forme de form en utilisant event.target
-        console.log(`
-        ${event.target.querySelector("#email-label").textContent} : ${event.target.querySelector("#email").value}
-        ${event.target.querySelector("#password-label").textContent} : ${event.target.querySelector("#password").value}
-                `)
+        
         const email = event.target.querySelector("#email").value
         const password = event.target.querySelector("#password").value
 

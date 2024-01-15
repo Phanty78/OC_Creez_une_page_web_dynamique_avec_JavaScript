@@ -1,4 +1,5 @@
 import {callCategoryApi} from "./script.js"
+import {callWorksAPI} from "./script.js"
 
 //Récupération des éléments de la DOM pour la modal
 const modalLinks = document.querySelectorAll('a[href="#modal"]')
@@ -13,21 +14,6 @@ const addWorkForm = document.querySelector(".add-work-form")
 
 const token = window.localStorage.getItem("token")
 
-// Appel a l'API pour l'affichage des travaux dans la modal
-async function getWorksForModal(){
-    try {
-        const APIResponse = await fetch("http://localhost:5678/api/works")
-        if (!APIResponse.ok) {
-            throw new Error (`Response has fail with the status ${apiResponse.status}`)
-        }else{
-            return (await APIResponse).json()
-        }
-    } catch (error) {
-        alert("La connexion a l'API a échoué pour le chargement de la modal.")
-        console.error('An error was encounter during the API execution : ',error)
-    }
-}
-
 // Affichage des travaux dans la modal et construction des éléments de supression
 function displayWorksInGallery(worksToDisplay){
     for (let i = 0; i < worksToDisplay.length; i++) {
@@ -39,11 +25,15 @@ function displayWorksInGallery(worksToDisplay){
 }
 
 // Fonction de gestion des evenements lors de l'appui sur le bouton de suppresion d'un work via la modale
-async function removeWork(trashButton,token) {
+async function removeWork(trashButton, token) {
     trashButton.addEventListener("click", async event => {
-    event.preventDefault()
-    deletework(event.target.dataset.workId,token)
-    } )
+        event.preventDefault();
+        try {
+            await deletework(event.target.dataset.workId, token);
+        } catch (error) {
+            console.error('An error occurred during work removal: ', error);
+        }
+    });
 }
 
 // Fonction de suppresion d'un work, renvoie une erreur pour le moment
@@ -57,15 +47,12 @@ async function deletework(workId,tokenBearer) {
     }
     try {
         const deleteWorkAPIResponse = await fetch(`http://localhost:5678/api/works/${workId}`, deleteRequestOption)
-        if (!deleteWorkAPIResponse.ok) {
-            throw new Error (`Response has fail with the status ${apiResponse.status}`)
+        if (deleteWorkAPIResponse.status !== 204) {
+            throw new Error (`Response has fail with the status ${deleteWorkAPIResponse.status}`)
         }
-        const deletedWorkData = await deleteWorkAPIResponse.json()
         console.log("delete ok")
-        return deletedWorkData
-        // Il faudra ajouter le code pour masquet l'élément work supprimé sans avoir à recharger la page
+        // Il faudra ajouter le code pour masquer l'élément work supprimé sans avoir à recharger la page
     } catch (error) {
-        alert("Une erreur est survenu durant la tentative de supression.")
         console.error('An error was encounter during the API execution : ',error)
     }
 }
@@ -75,6 +62,9 @@ function OpenAddWorkModal(){
     closeModal(document.getElementById("modal"))
     openModal(document.getElementById("add-work-modal"))
     fillFormSelect(selectInput)
+    if (titleInput.value !== null && titleInput.value !== "" && selectInput.value !== null && imageLoad !== null){
+        button.disabled = false
+    }
     enabledSubmitButton(addWorkSubmitButton,titleInput,selectInput,imageLoad,addWorkForm)
     ReturnToPreviousModal()
 }
@@ -89,41 +79,6 @@ function ReturnToPreviousModal() {
         })
 }
 
-if (modalLinks) {
-    for (let i = 0; i < modalLinks.length; i++) {
-        modalLinks[i].addEventListener("click",async (event)=>{
-            const addNewWorkButton = document.querySelector(".modal-wrapper button")
-            event.preventDefault()
-            openModal(document.getElementById("modal"))
-            const worksForModal = await getWorksForModal()
-            displayWorksInGallery(worksForModal)
-            const trashButtons = document.querySelectorAll("figure .trash-button")
-            for (let i = 0; i < trashButtons.length; i++) {
-                removeWork(trashButtons[i],token)
-            }
-            addNewWorkButton.addEventListener("click", (event)=>{
-            OpenAddWorkModal()
-            })
-            
-        })
-}
-}
-
-// Fonction de fermetue des modals par le bouton X
-if (closeModalButtons) {
-    for (let i = 0; i < closeModalButtons.length; i++) {
-        closeModalButtons[i].addEventListener("click", (event)=> {
-            event.preventDefault()
-            const modalNodes = document.querySelectorAll(".class-modal")
-            for (let i = 0; i < modalNodes.length; i++) {
-                closeModal(modalNodes[i],modalGallery)
-                modalGallery.innerHTML = ""
-                selectInput.innerHTML = ""
-            }
-        })   
-    }   
-}
-
 // Fonction de fermeture des modals quand l'utilisateur clique en dehors de celle ci
 if (modalWindows) {
     for (let i = 0; i < modalWindows.length; i++) {
@@ -133,7 +88,6 @@ if (modalWindows) {
                 closeModal(modalWindows[i])
                 modalGallery.innerHTML = ""
                 selectInput.innerHTML = ""
-                console.log("nettoyage !")
             }
         })
     }
@@ -168,10 +122,47 @@ async function fillFormSelect(selectInput) {
 // Cette fonction vérifie que tous les chams du formulaire sont remplis à chaque changement dans le formulaire
 function enabledSubmitButton(button,titleInput,selectInput,imageLoad,form) {
     form.addEventListener("change", () =>{
-        console.log("changement")
-        if (titleInput.value !== null && titleInput.value !== "" && selectInput.value !== null && imageLoad !== null){
-            button.disabled = false
-        }
+        button.disabled = false
     })
 }
+
+// Gestion des événements liés au modals
+if (modalLinks) {
+    for (let i = 0; i < modalLinks.length; i++) {
+        modalLinks[i].addEventListener("click",async (event)=>{
+            const addNewWorkButton = document.querySelector(".modal-wrapper button")
+            event.preventDefault()
+            openModal(document.getElementById("modal"))
+            const worksForModal = await callWorksAPI()
+            displayWorksInGallery(worksForModal)
+            const trashButtons = document.querySelectorAll("figure .trash-button")
+            for (let y = 0; y < trashButtons.length; y++) {
+                try {
+                    await removeWork(trashButtons[y],token)
+                } catch (error) {
+                    console.error('An error was encounter during the API execution : ',error)
+                }
+            }
+            addNewWorkButton.addEventListener("click", (event)=>{
+            OpenAddWorkModal()
+            })
+        })
+    }
+}
+
+// Gestion de la demande de fermeture des modals par le bouton X
+if (closeModalButtons) {
+    for (let i = 0; i < closeModalButtons.length; i++) {
+        closeModalButtons[i].addEventListener("click", (event)=> {
+            event.preventDefault()
+            const modalNodes = document.querySelectorAll(".class-modal")
+            for (let i = 0; i < modalNodes.length; i++) {
+                closeModal(modalNodes[i],modalGallery)
+                modalGallery.innerHTML = ""
+                selectInput.innerHTML = ""
+            }
+        })   
+    }   
+}
+
 

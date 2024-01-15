@@ -2,9 +2,11 @@ const logInForm = document.querySelector(".login-form")
 const errorDisplayZone = document.querySelector(".error-display")
 const emailInput = document.getElementById("email")
 const passwordInput = document.getElementById("password")
+const loginForm = document.querySelector(".login-form")
+const inputsArray = document.querySelectorAll("input")
+
 
 //La fonction etLogInInformations écoute l'événement submit du formulaire et récupère les valeurs de email et password
-
 async function getLogInInformations() {
     logInForm.addEventListener("submit", async (event) =>{
         event.preventDefault();
@@ -21,18 +23,11 @@ async function getLogInInformations() {
     })
 }
 
-function EraseErrorMesssageOnFocus(emailInput,passwordInput,displayZone){
-    emailInput.addEventListener("focus",(event) =>{
-        displayZone.innerHTML = ""
-    })
-    passwordInput.addEventListener("focus",(event) =>{
-        displayZone.innerHTML = ""
-    })
+function deleteMessage(displayZone){
+    displayZone.innerHTML = ""
 }
 
-
 // La fonction postLogIn envoi à l'API l'email et le mot de passe de l'utilisateur et en cas de réponse favorable envoi le token de connexion , sinon un message d'erreur.
-
 async function postLogIn(email,password) {
     const postData = {
         "email": email,
@@ -70,4 +65,10 @@ async function postLogIn(email,password) {
 }
 
 getLogInInformations()
-EraseErrorMesssageOnFocus(emailInput,passwordInput,errorDisplayZone)
+
+for (let i = 0; i < inputsArray.length; i++) {
+    inputsArray[i].addEventListener("focus",(event) =>{
+        deleteMessage(errorDisplayZone)
+    })
+    
+}

@@ -23,42 +23,31 @@ async function chooseMode() { // Cette fonction définit le mode à utiliser
     }
     if(gallery) {
         // on verifie que gallery existe bien dans la page avant de s'en servir au sein de getWorks
-        getWorks()
+        const works = await callWorksAPI()
+        displayWorks(works)
+        manageFilters(works)
     }
 }
 
-async function getWorks(){ // Fonction de récupération et d'appel d'affichage des travaux 
+function manageFilters(works) {
     let filteredWorks = []
-    try{
-        const apiResponse = await fetch("http://localhost:5678/api/works")
-        if (!apiResponse.ok) {
-            throw new Error(`Response has fail with the status ${apiResponse.status}`)
-        }else{
-            const works = await apiResponse.json()
-            filters = document.querySelectorAll(".filter")
-            // Premier appel à displayWorks pour afficher les travaux lors du première affichage de la page
-            displayWorks(works)
-            const figureElements = document.querySelectorAll(".gallery figure")
-            for (let i = 0; i < filters.length; i++) {
-                filters[i].addEventListener("click", (event) => {
-                    if (event.target.id === "all-filter") {
-                        addOrRemoveClassSelected(event.target,filters)
-                        gallery.innerHTML = ""
-                        displayWorks(works)
-                    }else{
-                        addOrRemoveClassSelected(event.target,filters)
-                        filteredWorks = works.filter((work) => work.category.id === parseInt(event.target.dataset.liId ))
-                        console.log(filteredWorks)
-                        gallery.innerHTML = ""
-                        displayWorks(filteredWorks)
-                    }
-                    
-                })
+    filters = document.querySelectorAll(".filter")
+    const figureElements = document.querySelectorAll(".gallery figure")
+    for (let i = 0; i < filters.length; i++) {
+        filters[i].addEventListener("click", (event) => {
+            if (event.target.id === "all-filter") {
+                addOrRemoveClassSelected(event.target,filters)
+                gallery.innerHTML = ""
+                displayWorks(works)
+            }else{
+                addOrRemoveClassSelected(event.target,filters)
+                filteredWorks = works.filter((work) => work.category.id === parseInt(event.target.dataset.liId ))
+                console.log(filteredWorks)
+                gallery.innerHTML = ""
+                displayWorks(filteredWorks)
             }
-            }
-        }catch(error){
-            alert("La connexion a échoué.")
-            console.error('An error was encounter during the API execution : ',error)
+            
+        })
     }
 }
 
@@ -94,6 +83,19 @@ function addOrRemoveClassSelected(eventTarget,filters){ // Fonction d'ajout de l
     eventTarget.classList.add("selected-filter")
 }
 
+async function callWorksAPI() { // Fonction d'appel à l'API pour récupérer les travaux
+    try {
+        const apiWorksResponse = await fetch ("http://localhost:5678/api/works")
+        if (!apiWorksResponse.ok) {
+            throw new Error(`Response has fail with the status ${apiCategoryResponse.status}`)      
+        } else {
+            return apiWorksResponse.json()       
+        }   
+    } catch (error) {
+        console.error('An error was encounter during the API execution : ',error) 
+    } 
+}
+export{callWorksAPI}
 
 async function callCategoryApi() { // Fonction d'appel à l'API pour récupérer les categories
     try {

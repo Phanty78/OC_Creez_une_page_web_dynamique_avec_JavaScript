@@ -11,6 +11,10 @@ const selectInput = document.querySelector(".select-input")
 const titleInput = document.getElementById("title")
 const imageLoad = document.getElementById("load-image")
 const addWorkForm = document.querySelector(".add-work-form")
+const addPhotoButton = document.querySelector(".add-photo-button")
+const inputImage = document.getElementById("load-image")
+const imagePreview = document.getElementById("image-preview")
+const imageDefaultBackground = document.querySelector(".AddImageZone i")
 
 const token = window.localStorage.getItem("token")
 
@@ -62,11 +66,50 @@ function OpenAddWorkModal(){
     closeModal(document.getElementById("modal"))
     openModal(document.getElementById("add-work-modal"))
     fillFormSelect(selectInput)
-    if (titleInput.value !== null && titleInput.value !== "" && selectInput.value !== null && imageLoad !== null){
-        button.disabled = false
-    }
+    addPhoto(addPhotoButton,inputImage)
     enabledSubmitButton(addWorkSubmitButton,titleInput,selectInput,imageLoad,addWorkForm)
     ReturnToPreviousModal()
+}
+
+// Fonction d'écoute du bouton AddPhotoButton
+function addPhoto(addPhotoButton) {
+    addPhotoButton.addEventListener("click", (event) => {
+        event.preventDefault()
+        manageImageUpload(inputImage,imagePreview,imageDefaultBackground)
+    })
+}
+
+// Fonction de vidage de l'input file
+function ClearInputFile(inputFile) {
+    inputImage.type = "text"
+    inputImage.type = "file"
+}
+
+
+//Fonction de gestion de l'ajout d'image
+function manageImageUpload(inputImage,imagePreview,imageDefaultBackground) {
+    inputImage.click()
+    inputImage.addEventListener("change", (event) =>{
+        if (inputImage.files && inputImage.files[0]) {
+            if (inputImage.files[0].size <= 4000000) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    imagePreview.src = e.target.result;
+                };
+                reader.readAsDataURL(inputImage.files[0]);
+                document.querySelector(".add-photo-button").classList.add("hidden")
+                document.querySelector(".AddImageZone p").classList.add("hidden")
+                document.querySelector(".AddImageZone").classList.add("no-padding")
+                imagePreview.classList.remove("hidden")
+                imageDefaultBackground.classList.add("hidden")
+                
+            } else {
+                alert("Le fichier que vous tenter de télécharger dépasser la limite de 4Mo")
+                ClearInputFile(inputImage)
+            }
+        }
+    })
+    
 }
 
 // Fonction de retour à la fenêtre modal précédente
@@ -122,7 +165,11 @@ async function fillFormSelect(selectInput) {
 // Cette fonction vérifie que tous les chams du formulaire sont remplis à chaque changement dans le formulaire
 function enabledSubmitButton(button,titleInput,selectInput,imageLoad,form) {
     form.addEventListener("change", () =>{
-        button.disabled = false
+        if (titleInput.value !== null && titleInput.value !== "" && selectInput.value !== null && imageLoad !== null){
+            button.disabled = false
+        }else{
+            button.disabled = true
+        }
     })
 }
 
@@ -160,6 +207,7 @@ if (closeModalButtons) {
                 closeModal(modalNodes[i],modalGallery)
                 modalGallery.innerHTML = ""
                 selectInput.innerHTML = ""
+                ClearInputFile(inputImage)
             }
         })   
     }   

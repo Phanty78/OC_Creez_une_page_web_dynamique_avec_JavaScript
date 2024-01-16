@@ -503,7 +503,8 @@ footer{
 
 .AddImageZone{
 	background-color: #E8F1F6;
-	width: 100%;
+	width: 420px;
+	height: 169px;
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
@@ -512,6 +513,17 @@ footer{
 	gap: 6px;
 	padding-top: 13px;
 	padding-bottom: 19px;
+}
+
+.AddImageZone img{
+	max-width: 420px;
+	max-height: 169px;
+	flex: 0 1 0;
+	object-fit: contain;
+}
+
+.no-padding{
+	padding: 0;
 }
 
 .add-photo-button{
@@ -551,9 +563,10 @@ button:disabled:hover{
 	background: #A7A7A7;
 }
 
+
 /************* Hidden *******************/
 
 .hidden{
-	display: none;
+	display: none !important;
 }
 

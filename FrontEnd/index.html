@@ -9,8 +9,8 @@
 	<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Work+Sans&display=swap" rel="stylesheet">
 	<meta name="description" content="">
 	<link rel="stylesheet" href="./assets/style.css">
-	<script src="./assets/js/script.js" type="module" crossorigin="anonymous" defer></script>
-	<script src="./assets/js/modal.js" type="module" crossorigin="anonymous" defer></script>
+	<script src="./assets/js/script.js" type="module" crossorigin="anonymous" ></script>
+	<script src="./assets/js/modal.js" type="module" crossorigin="anonymous" ></script>
 	<script src="https://kit.fontawesome.com/21b8cc6928.js" crossorigin="anonymous"></script>
 </head>
 <body>
@@ -79,7 +79,9 @@
 			<form method="post" action="#" enctype="multipart/form-data" class="login-form add-work-form">
 				<div class="AddImageZone">
 					<i class="fa-regular fa-image fa-5x" style="color: #b9c5cc;"></i>
-					<button class="add-photo-button">+ Ajouter photo<input class="hidden" id="load-image" type="file"></button>	
+					<img id="image-preview" class="hidden image-preview" alt="Aperçu de l'image">
+					<button class="add-photo-button">+ Ajouter photo</button>
+					<input class="hidden" id="load-image" type="file" accept="image/*">
 					<p>jpg, png : 4mo max</p>
 				</div>
 				<label for="title">Titre</label>

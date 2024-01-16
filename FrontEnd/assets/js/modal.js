@@ -66,23 +66,30 @@ function OpenAddWorkModal(){
     closeModal(document.getElementById("modal"))
     openModal(document.getElementById("add-work-modal"))
     fillFormSelect(selectInput)
-    addPhoto(addPhotoButton,inputImage)
+    addPhoto(addPhotoButton)
     enabledSubmitButton(addWorkSubmitButton,titleInput,selectInput,imageLoad,addWorkForm)
     ReturnToPreviousModal()
 }
 
 // Fonction d'écoute du bouton AddPhotoButton
 function addPhoto(addPhotoButton) {
-    addPhotoButton.addEventListener("click", (event) => {
-        event.preventDefault()
-        manageImageUpload(inputImage,imagePreview,imageDefaultBackground)
-    })
+    addPhotoButton.addEventListener("click", addPhotoHandler)    
 }
 
-// Fonction de vidage de l'input file
-function ClearInputFile(inputFile) {
+function addPhotoHandler() {
+    manageImageUpload(inputImage, imagePreview, imageDefaultBackground);
+}
+
+// Fonction de reset de la div addImageZone
+function ClearAddImageZone(imageElement) {
+    imageElement.src = ""
     inputImage.type = "text"
     inputImage.type = "file"
+    document.querySelector(".add-photo-button").classList.remove("hidden")
+    document.querySelector(".AddImageZone p").classList.remove("hidden")
+    document.querySelector(".AddImageZone").classList.remove("no-padding")
+    imagePreview.classList.add("hidden")
+    imageDefaultBackground.classList.remove("hidden")
 }
 
 
@@ -108,6 +115,7 @@ function manageImageUpload(inputImage,imagePreview,imageDefaultBackground) {
                 ClearInputFile(inputImage)
             }
         }
+        console.log("test")
     })
     
 }
@@ -115,7 +123,7 @@ function manageImageUpload(inputImage,imagePreview,imageDefaultBackground) {
 // Fonction de retour à la fenêtre modal précédente
 function ReturnToPreviousModal() {
     const returnButton = document.querySelector(".return-button")
-    returnButton.addEventListener("click", (event) =>{
+    returnButton.addEventListener("click", () =>{
         closeModal(document.getElementById("add-work-modal"))
         openModal(document.getElementById("modal"))
         selectInput.innerHTML = ""
@@ -141,6 +149,7 @@ function closeModal(modal) {
     modal.classList.add("hidden")
     modal.setAttribute("aria-hidden", true)
     modal.removeAttribute("aria-modal")
+    ClearAddImageZone(imagePreview)
 }
 
 // Fonction d'ouverture des modals
@@ -190,9 +199,7 @@ if (modalLinks) {
                     console.error('An error was encounter during the API execution : ',error)
                 }
             }
-            addNewWorkButton.addEventListener("click", (event)=>{
-            OpenAddWorkModal()
-            })
+            addNewWorkButton.addEventListener("click", OpenAddWorkModal)
         })
     }
 }
@@ -203,11 +210,10 @@ if (closeModalButtons) {
         closeModalButtons[i].addEventListener("click", (event)=> {
             event.preventDefault()
             const modalNodes = document.querySelectorAll(".class-modal")
-            for (let i = 0; i < modalNodes.length; i++) {
-                closeModal(modalNodes[i],modalGallery)
+            for (let y = 0; y < modalNodes.length; y++) {
+                closeModal(modalNodes[y],modalGallery)
                 modalGallery.innerHTML = ""
                 selectInput.innerHTML = ""
-                ClearInputFile(inputImage)
             }
         })   
     }   

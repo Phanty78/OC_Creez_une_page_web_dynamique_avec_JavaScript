@@ -215,7 +215,8 @@ async function fillFormSelect(selectInput) {
 function enabledSubmitButton(button,titleInput,selectInput,imageLoad,form) {
     form.addEventListener("change", (event) =>{
         event.stopPropagation()
-        if (titleInput.value !== null && titleInput.value !== "" && selectInput.value !== null && imageLoad !== null){
+        console.log("imageLoad.value",imageLoad.value === "")
+        if (titleInput.value !== null && titleInput.value !== "" && selectInput.value !== null && imageLoad.value !== null){
             button.disabled = false
         }else{
             button.disabled = true
@@ -273,5 +274,3 @@ if (closeModalButtons) {
         })   
     }   
 }
-
-

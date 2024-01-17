@@ -10,7 +10,9 @@ const inputsArray = document.querySelectorAll("input")
 async function getLogInInformations() {
     logInForm.addEventListener("submit", async (event) =>{
         event.preventDefault();
-        errorDisplayZone.innerHTML = ""
+        if (errorDisplayZone) {
+            deleteMessage()
+        }
         const email = event.target.querySelector("#email").value
         const password = event.target.querySelector("#password").value
 
@@ -23,8 +25,8 @@ async function getLogInInformations() {
     })
 }
 
-function deleteMessage(displayZone){
-    displayZone.innerHTML = ""
+function deleteMessage(){
+    errorDisplayZone.innerHTML = ""
 }
 
 // La fonction postLogIn envoi à l'API l'email et le mot de passe de l'utilisateur et en cas de réponse favorable envoi le token de connexion , sinon un message d'erreur.
@@ -68,7 +70,8 @@ getLogInInformations()
 
 for (let i = 0; i < inputsArray.length; i++) {
     inputsArray[i].addEventListener("focus",(event) =>{
-        deleteMessage(errorDisplayZone)
+        if (errorDisplayZone) {
+            deleteMessage()
+        }      
     })
-    
 }

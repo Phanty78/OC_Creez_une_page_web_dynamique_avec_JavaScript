@@ -1,5 +1,4 @@
-import {callCategoryApi} from "./script.js"
-import {callWorksAPI} from "./script.js"
+import {callDataApi} from "./script.js"
 
 //Récupération des éléments de la DOM pour la modal
 const modalLinks = document.querySelectorAll('a[href="#modal"]')
@@ -16,6 +15,9 @@ const inputImage = document.getElementById("load-image")
 const imagePreview = document.getElementById("image-preview")
 const imageDefaultBackground = document.querySelector(".AddImageZone i")
 
+const CategoriesURL = "http://localhost:5678/api/categories"
+const worksURL = "http://localhost:5678/api/works"
+
 const token = window.localStorage.getItem("token")
 
 // Affichage des travaux dans la modal et construction des éléments de supression
@@ -31,7 +33,8 @@ function displayWorksInGallery(worksToDisplay){
 // Fonction de gestion des evenements lors de l'appui sur le bouton de suppresion d'un work via la modale
 async function removeWork(trashButton, token) {
     trashButton.addEventListener("click", async event => {
-        event.preventDefault();
+        event.preventDefault()
+        event.stopPropagation()
         try {
             await deletework(event.target.dataset.workId, token);
         } catch (error) {
@@ -47,15 +50,49 @@ async function deletework(workId,tokenBearer) {
         headers : {
             'Authorization' : `Bearer ${tokenBearer}`,
             'Content-Type':'application/json',
-        }
+        },
     }
     try {
         const deleteWorkAPIResponse = await fetch(`http://localhost:5678/api/works/${workId}`, deleteRequestOption)
         if (deleteWorkAPIResponse.status !== 204) {
             throw new Error (`Response has fail with the status ${deleteWorkAPIResponse.status}`)
         }
-        console.log("delete ok")
         // Il faudra ajouter le code pour masquer l'élément work supprimé sans avoir à recharger la page
+    } catch (error) {
+        console.error('An error was encounter during the API execution : ',error)
+    }
+}
+
+// Fonction d'envoie d'un nouveau work 
+async function addWork(tokenBearer) {
+    const formData = new FormData();
+    formData.append("image", inputImage.files[0]);
+    formData.append("title",String(titleInput.value));
+    formData.append("category",selectInput.value );
+
+    console.log(formData)
+
+    const postRequestOption = {
+        method : 'POST',
+        headers : {
+            'Authorization' : `Bearer ${tokenBearer}`,
+            'accept': 'application/json',
+        },
+        body: formData,
+    }
+    try {
+        const addWorkkAPIResponse = await fetch("http://localhost:5678/api/works", postRequestOption)
+        if (addWorkkAPIResponse.status !== 201) {
+            if (addWorkkAPIResponse.status === 400) {
+                alert("Erreur, requête erroné")
+            } else if (addWorkkAPIResponse.status === 401){
+                alert("Erreur, vous n'êtes pas autorisée à faire cette requête, rapprochez-vous d'un administrateur")
+            }else{
+                alert("Erreur, une erreur inattendue, c'est produite")
+            }
+            throw new Error (`Response has fail with the status ${addWorkkAPIResponse.status}`)
+        }
+        return addWorkkAPIResponse.json() 
     } catch (error) {
         console.error('An error was encounter during the API execution : ',error)
     }
@@ -68,6 +105,7 @@ function OpenAddWorkModal(){
     fillFormSelect(selectInput)
     addPhoto(addPhotoButton)
     enabledSubmitButton(addWorkSubmitButton,titleInput,selectInput,imageLoad,addWorkForm)
+    addWorkFormSubmit(addWorkForm)
     ReturnToPreviousModal()
 }
 
@@ -97,6 +135,7 @@ function ClearAddImageZone(imageElement) {
 function manageImageUpload(inputImage,imagePreview,imageDefaultBackground) {
     inputImage.click()
     inputImage.addEventListener("change", (event) =>{
+        event.stopPropagation()
         if (inputImage.files && inputImage.files[0]) {
             if (inputImage.files[0].size <= 4000000) {
                 const reader = new FileReader();
@@ -115,7 +154,6 @@ function manageImageUpload(inputImage,imagePreview,imageDefaultBackground) {
                 ClearInputFile(inputImage)
             }
         }
-        console.log("test")
     })
     
 }
@@ -123,7 +161,8 @@ function manageImageUpload(inputImage,imagePreview,imageDefaultBackground) {
 // Fonction de retour à la fenêtre modal précédente
 function ReturnToPreviousModal() {
     const returnButton = document.querySelector(".return-button")
-    returnButton.addEventListener("click", () =>{
+    returnButton.addEventListener("click", (event) =>{
+        event.stopPropagation()
         closeModal(document.getElementById("add-work-modal"))
         openModal(document.getElementById("modal"))
         selectInput.innerHTML = ""
@@ -136,6 +175,7 @@ if (modalWindows) {
         window.addEventListener("click", (event) =>{
             if (event.target === modalWindows[i]) {
                 event.preventDefault()
+                event.stopPropagation()
                 closeModal(modalWindows[i])
                 modalGallery.innerHTML = ""
                 selectInput.innerHTML = ""
@@ -162,10 +202,10 @@ function openModal(modal) {
 
 // Fonction de remplissage des categories dans la modal Ajout photo
 async function fillFormSelect(selectInput) {
-    const categories = await callCategoryApi()
+    const categories = await callDataApi(CategoriesURL)
     for (let i = 0; i < categories.length; i++) {
         const optionElement = document.createElement("option")
-        optionElement.setAttribute("value", categories[i].name )
+        optionElement.setAttribute("value", categories[i].id )
         optionElement.textContent = categories[i].name 
         selectInput.appendChild(optionElement)
     }
@@ -173,7 +213,8 @@ async function fillFormSelect(selectInput) {
 
 // Cette fonction vérifie que tous les chams du formulaire sont remplis à chaque changement dans le formulaire
 function enabledSubmitButton(button,titleInput,selectInput,imageLoad,form) {
-    form.addEventListener("change", () =>{
+    form.addEventListener("change", (event) =>{
+        event.stopPropagation()
         if (titleInput.value !== null && titleInput.value !== "" && selectInput.value !== null && imageLoad !== null){
             button.disabled = false
         }else{
@@ -182,14 +223,27 @@ function enabledSubmitButton(button,titleInput,selectInput,imageLoad,form) {
     })
 }
 
+// Fonction d'écoute du bouton addWorkSubmitButton et d'appel API POST d'un nouveau work
+function addWorkFormSubmit(addWorkForm) {
+    addWorkForm.addEventListener("submit", async (event) => {
+        event.preventDefault()
+        event.stopPropagation()
+        if (inputImage.files[0] !== null && titleInput.value !== "" && selectInput.value !== "") {
+            await addWork(token)
+        }
+    })
+}
+
+
 // Gestion des événements liés au modals
 if (modalLinks) {
     for (let i = 0; i < modalLinks.length; i++) {
         modalLinks[i].addEventListener("click",async (event)=>{
             const addNewWorkButton = document.querySelector(".modal-wrapper button")
             event.preventDefault()
+            event.stopPropagation()
             openModal(document.getElementById("modal"))
-            const worksForModal = await callWorksAPI()
+            const worksForModal = await callDataApi(worksURL)
             displayWorksInGallery(worksForModal)
             const trashButtons = document.querySelectorAll("figure .trash-button")
             for (let y = 0; y < trashButtons.length; y++) {
@@ -209,6 +263,7 @@ if (closeModalButtons) {
     for (let i = 0; i < closeModalButtons.length; i++) {
         closeModalButtons[i].addEventListener("click", (event)=> {
             event.preventDefault()
+            event.stopPropagation()
             const modalNodes = document.querySelectorAll(".class-modal")
             for (let y = 0; y < modalNodes.length; y++) {
                 closeModal(modalNodes[y],modalGallery)

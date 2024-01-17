@@ -7,6 +7,9 @@ const filterContainer = document.querySelector(".filter-container")
 const portfolioHeader = document.querySelector(".portfolio-header")
 let filters = []
 
+const CategoriesURL = "http://localhost:5678/api/categories"
+const worksURL = "http://localhost:5678/api/works"
+
 // Si le token de connexion existe dans le local storage alors on le stocke dans la variable token
 const token = window.localStorage.getItem("token")
 
@@ -19,11 +22,11 @@ async function chooseMode() { // Cette fonction définit le mode à utiliser
         portfolioHeader.classList.add("more-margin")
     }else{
         // On crée les boutons filter grace à un appel de l'api category
-        createFiltersButton(await callCategoryApi())
+        createFiltersButton(await callDataApi(CategoriesURL))
     }
     if(gallery) {
         // on verifie que gallery existe bien dans la page avant de s'en servir au sein de getWorks
-        const works = await callWorksAPI()
+        const works = await callDataApi(worksURL)
         displayWorks(works)
         manageFilters(works)
     }
@@ -83,23 +86,9 @@ function addOrRemoveClassSelected(eventTarget,filters){ // Fonction d'ajout de l
     eventTarget.classList.add("selected-filter")
 }
 
-async function callWorksAPI() { // Fonction d'appel à l'API pour récupérer les travaux
+async function callDataApi(url) { // Fonction d'appel à l'API pour récupérer les categories
     try {
-        const apiWorksResponse = await fetch ("http://localhost:5678/api/works")
-        if (!apiWorksResponse.ok) {
-            throw new Error(`Response has fail with the status ${apiCategoryResponse.status}`)      
-        } else {
-            return apiWorksResponse.json()       
-        }   
-    } catch (error) {
-        console.error('An error was encounter during the API execution : ',error) 
-    } 
-}
-export{callWorksAPI}
-
-async function callCategoryApi() { // Fonction d'appel à l'API pour récupérer les categories
-    try {
-        const apiCategoryResponse = await fetch ("http://localhost:5678/api/categories")
+        const apiCategoryResponse = await fetch (url)
         if (!apiCategoryResponse.ok) {
             throw new Error(`Response has fail with the status ${apiCategoryResponse.status}`)      
         } else {
@@ -109,7 +98,7 @@ async function callCategoryApi() { // Fonction d'appel à l'API pour récupérer
         console.error('An error was encounter during the API execution : ',error) 
     } 
 }
-export{callCategoryApi}
+export{callDataApi}
 
 chooseMode()
 

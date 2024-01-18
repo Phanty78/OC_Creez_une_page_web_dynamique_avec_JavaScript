@@ -25,7 +25,8 @@ function displayWorksInGallery(worksToDisplay){
     for (let i = 0; i < worksToDisplay.length; i++) {
         const figureElement = document.createElement("figure")
         figureElement.innerHTML = `<img src="${worksToDisplay[i].imageUrl}" alt="${worksToDisplay[i].title}"><div class="trash-button"><i class="fa-solid fa-trash-can" data-work-id="${worksToDisplay[i].id}" style="color: #ffffff;"></i></div>`
-        figureElement.setAttribute("data-category-id", worksToDisplay[i].category.id);
+        figureElement.setAttribute("data-id", worksToDisplay[i].id)
+        figureElement.setAttribute("data-category-id", worksToDisplay[i].category.id)
         modalGallery.appendChild(figureElement)
     }
 }
@@ -57,7 +58,13 @@ async function deletework(workId,tokenBearer) {
         if (deleteWorkAPIResponse.status !== 204) {
             throw new Error (`Response has fail with the status ${deleteWorkAPIResponse.status}`)
         }
-        // Il faudra ajouter le code pour masquer l'élément work supprimé sans avoir à recharger la page
+        // Cette partie du code permet de suprimmer l'élément de la DOM sans avoir à reload la page
+        alert(`La réalisation numéro ${workId} a bien était supprimé.`)
+        const removedElements = document.querySelectorAll(`[data-id="${workId}"]`)
+        for (let i = 0; i < removedElements.length; i++) {
+            removedElements[i].classList.add("hidden")
+            removedElements[i].remove()
+        }
     } catch (error) {
         console.error('An error was encounter during the API execution : ',error)
     }
@@ -69,8 +76,6 @@ async function addWork(tokenBearer) {
     formData.append("image", inputImage.files[0]);
     formData.append("title",String(titleInput.value));
     formData.append("category",selectInput.value );
-
-    console.log(formData)
 
     const postRequestOption = {
         method : 'POST',
@@ -215,7 +220,6 @@ async function fillFormSelect(selectInput) {
 function enabledSubmitButton(button,titleInput,selectInput,imageLoad,form) {
     form.addEventListener("change", (event) =>{
         event.stopPropagation()
-        console.log("imageLoad.value",imageLoad.value === "")
         if (titleInput.value !== null && titleInput.value !== "" && selectInput.value !== null && imageLoad.value !== null){
             button.disabled = false
         }else{

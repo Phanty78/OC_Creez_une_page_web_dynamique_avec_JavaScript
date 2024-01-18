@@ -416,22 +416,22 @@ footer{
 	gap: 30px;
 	max-width: 630px;
 	overflow: auto;
-	padding: 26px 105px 45px 105px;
+	padding: 60px 105px 45px 105px;
 	border-radius: 10px;
 	position: relative;
 }
 
 .modal-wrapper a{
 	position: absolute;
-    top: 12px;
+    top: 26px;
 }
 
 .close-modal-button{
-    right: 12px;
+    right: 30px;
 }
 
 .return-button{
-	left: 12px;
+	left: 30px;
 }
 
 

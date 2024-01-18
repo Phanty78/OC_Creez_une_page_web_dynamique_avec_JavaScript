@@ -1,0 +1,12 @@
+{
+    "[html]":{
+        "editor.defaultFormatter": "vscode.html-language-features"
+    },
+    "liveServer.settings.ignoreFiles": [
+        ".vscode/**",
+        "**/*.scss",
+        "**/*.sass",
+        "**/*.sqlite",
+        "**/*.ts"
+    ]
+}

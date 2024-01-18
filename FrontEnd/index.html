@@ -26,7 +26,7 @@
 	<nav>
 		<ul>
 			<li><a href="index.html">projets</a></li>
-			<li><a href="#">contact</a></li>
+			<li><a href="#contact">contact</a></li>
 			<li><a href="login.html">login</a></li>
 			<li><img src="./assets/icons/instagram.png" alt="Instagram"></li>
 		</ul>
@@ -60,26 +60,26 @@
 		<div class="gallery">
 		</div>
 	</section>
-	<aside id="modal" class="class-modal hidden" aria-hidden="true" role="dialog" aria-labelledby="title-modal">
+	<div id="modal" class="class-modal hidden" aria-hidden="true" role="dialog" aria-labelledby="title-modal-1">
 		<div class="modal-wrapper">
 			<a href="#" class="close-modal-button"><i class="fa-solid fa-x"></i></a>
-			<h2>Galerie photo</h2>
+			<h2 class="title-modal" id="title-modal-1">Galerie photo</h2>
 			<div class="modal-gallery"></div>
 			<div class="modal-separator"></div>
 			<button class="submit-button">Ajouter une photo</button>
 		</div>
-	</aside>
-	<aside id="add-work-modal" class="class-modal hidden" aria-hidden="true" role="dialog" aria-labelledby="title-modal">
+	</div>
+	<div id="add-work-modal" class="class-modal hidden" aria-hidden="true" role="dialog" aria-labelledby="title-modal-2">
 		<div class="modal-wrapper">
 			<div class="modal-nav-bar">
 				<a href="#" class="return-button"><i class="fa-solid fa-arrow-left"></i></a>
 				<a href="#" class="close-modal-button"><i class="fa-solid fa-x"></i></a>
 			</div>
-			<h2 class="title-modal-black">Ajout photo</h2>
+			<h2 class="title-modal-black" id="title-modal-2">Ajout photo</h2>
 			<form method="post" action="#" enctype="multipart/form-data" class="login-form add-work-form">
 				<div class="AddImageZone">
 					<i class="fa-regular fa-image fa-5x" style="color: #b9c5cc;"></i>
-					<img id="image-preview" class="hidden image-preview" alt="Aperçu de l'image">
+					<img id="image-preview" src="" class="hidden image-preview" alt="Aperçu de l'image">
 					<button class="add-photo-button">+ Ajouter photo</button>
 					<input class="hidden" id="load-image" type="file" accept="image/*">
 					<p>jpg, png : 4mo max</p>
@@ -87,23 +87,22 @@
 				<label for="title">Titre</label>
 				<input type="text" name="title" id="title" autocomplete="off" required>
 				<label for="category">Catégorie</label>
-				<select name="category" id="category" autocomplete="off" class="select-input" required></select>
+				<select name="category" id="category" autocomplete="off" class="select-input"></select>
 				<div class="modal-separator"></div>
 				<button class="submit-button add-work-form-button" disabled>Valider</button>
 			</form>
 			
 		</div>
-	</aside>
+	</div>
 
-	</aside>
 	<section id="contact">
 		<h2>Contact</h2>
 		<p>Vous avez un projet ? Discutons-en !</p>
 		<form action="#" method="post">
 			<label for="name">Nom</label>
-			<input type="text" name="name" autocomplete="name" id="name">
+			<input type="text" name="name" autocomplete="name" id="name" required>
 			<label for="email">Email</label>
-			<input type="email" name="email" autocomplete="email" id="email">
+			<input type="email" name="email" autocomplete="email" id="email" required>
 			<label for="message">Message</label>
 			<textarea name="message" autocomplete="off" id="message" cols="30" rows="10"></textarea>
 			<input type="submit" class="submit-button" value="Envoyer">

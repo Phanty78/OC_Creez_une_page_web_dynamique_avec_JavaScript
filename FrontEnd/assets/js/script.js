@@ -40,16 +40,18 @@ function manageFilters(works) {
         filters[i].addEventListener("click", (event) => {
             if (event.target.id === "all-filter") {
                 addOrRemoveClassSelected(event.target,filters)
-                gallery.innerHTML = ""
-                displayWorks(works)
+                for (let y = 0; y < figureElements.length; y++) {
+                    figureElements[y].classList.remove("hidden")            
+                }
             }else{
                 addOrRemoveClassSelected(event.target,filters)
-                filteredWorks = works.filter((work) => work.category.id === parseInt(event.target.dataset.liId ))
-                console.log(filteredWorks)
-                gallery.innerHTML = ""
-                displayWorks(filteredWorks)
-            }
-            
+                for (let y = 0; y < figureElements.length; y++) {
+                    figureElements[y].classList.remove("hidden") 
+                    if ((figureElements[y].dataset.categoryId) !== event.target.dataset.liId) {
+                        figureElements[y].classList.add("hidden") 
+                    }         
+                }
+            }     
         })
     }
 }
@@ -58,6 +60,7 @@ function displayWorks(worksToDisplay){ // Fonction d'affichage des travaux
     for (let i = 0; i < worksToDisplay.length; i++) {
         const figureElement = document.createElement("figure")
         const imageElement = document.createElement("img")
+        figureElement.setAttribute("data-id", worksToDisplay[i].id);
         figureElement.setAttribute("data-category-id", worksToDisplay[i].category.id);
         imageElement.src = worksToDisplay[i].imageUrl
         imageElement.alt = worksToDisplay[i].title

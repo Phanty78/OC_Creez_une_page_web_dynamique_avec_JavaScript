@@ -8,7 +8,6 @@ const modalWindows = document.querySelectorAll(".class-modal")
 const addWorkSubmitButton = document.querySelector(".add-work-form-button")
 const selectInput = document.querySelector(".select-input")
 const titleInput = document.getElementById("title")
-const imageLoad = document.getElementById("load-image")
 const addWorkForm = document.querySelector(".add-work-form")
 const addPhotoButton = document.querySelector(".add-photo-button")
 const inputImage = document.getElementById("load-image")
@@ -32,7 +31,7 @@ function displayWorksInGallery(worksToDisplay){
 }
 
 // Fonction de gestion des evenements lors de l'appui sur le bouton de suppresion d'un work via la modale
-async function removeWork(trashButton, token) {
+function removeWork(trashButton, token) {
     trashButton.addEventListener("click", async event => {
         event.preventDefault()
         event.stopPropagation()
@@ -56,6 +55,12 @@ async function deletework(workId,tokenBearer) {
     try {
         const deleteWorkAPIResponse = await fetch(`http://localhost:5678/api/works/${workId}`, deleteRequestOption)
         if (deleteWorkAPIResponse.status !== 204) {
+            if (deleteWorkAPIResponse.status === 401) {
+                alert("Erreur, vous n'êtes pas autorisée à faire cette requête, rapprochez-vous d'un administrateur")
+            }
+            if (deleteWorkAPIResponse.status === 500) {
+                alert("Erreur, une erreur inattendue, c'est produite")
+            }
             throw new Error (`Response has fail with the status ${deleteWorkAPIResponse.status}`)
         }
         // Cette partie du code permet de suprimmer l'élément de la DOM sans avoir à reload la page
@@ -109,7 +114,7 @@ function OpenAddWorkModal(){
     openModal(document.getElementById("add-work-modal"))
     fillFormSelect(selectInput)
     addPhoto(addPhotoButton)
-    enabledSubmitButton(addWorkSubmitButton,titleInput,selectInput,imageLoad,addWorkForm)
+    enabledSubmitButton(addWorkSubmitButton,titleInput,selectInput,inputImage,addWorkForm)
     addWorkFormSubmit(addWorkForm)
     ReturnToPreviousModal()
 }
@@ -216,11 +221,11 @@ async function fillFormSelect(selectInput) {
     }
 }
 
-// Cette fonction vérifie que tous les chams du formulaire sont remplis à chaque changement dans le formulaire
-function enabledSubmitButton(button,titleInput,selectInput,imageLoad,form) {
-    form.addEventListener("change", (event) =>{
+// Cette fonction vérifie que tous les champs du formulaire sont remplis à chaque changement dans le formulaire
+function enabledSubmitButton(button,titleInput,selectInput,inputImage,form) {
+    form.addEventListener("input", (event) =>{
         event.stopPropagation()
-        if (titleInput.value !== null && titleInput.value !== "" && selectInput.value !== null && imageLoad.value !== null){
+        if (titleInput.value !== null && titleInput.value !== "" && selectInput.value !== null && inputImage.files.length > 0){
             button.disabled = false
         }else{
             button.disabled = true
@@ -233,8 +238,16 @@ function addWorkFormSubmit(addWorkForm) {
     addWorkForm.addEventListener("submit", async (event) => {
         event.preventDefault()
         event.stopPropagation()
-        if (inputImage.files[0] !== null && titleInput.value !== "" && selectInput.value !== "") {
-            await addWork(token)
+        if (inputImage.files.length > 0 && titleInput.value !== "" && selectInput.value !== "") {
+            addWorkSubmitButton.disabled = true;
+            try {
+                await addWork(token)
+                addWorkSubmitButton.disabled = false;
+            } catch (error) {
+                console.error('An error occurred during work submission: ', error);
+                addWorkSubmitButton.disabled = false;
+            }
+            
         }
     })
 }

@@ -5,7 +5,6 @@ const editorModeBanner = document.querySelector(".editor-mode-banner")
 const editionButton = document.querySelector(".edition-button")
 const filterContainer = document.querySelector(".filter-container")
 const portfolioHeader = document.querySelector(".portfolio-header")
-let filters = []
 
 const CategoriesURL = "http://localhost:5678/api/categories"
 const worksURL = "http://localhost:5678/api/works"
@@ -28,18 +27,17 @@ async function chooseMode() { // Cette fonction définit le mode à utiliser
         // on verifie que gallery existe bien dans la page avant de s'en servir au sein de getWorks
         const works = await callDataApi(worksURL)
         displayWorks(works)
-        manageFilters(works)
+        manageFilters()
     }
 }
 
-function manageFilters(works) {
-    let filteredWorks = []
-    filters = document.querySelectorAll(".filter")
+function manageFilters() { //Cette fonction affiche ou cache les travaux en fonctions du filtre sélectionné.
+    let filters = document.querySelectorAll(".filter")
     const figureElements = document.querySelectorAll(".gallery figure")
     for (let i = 0; i < filters.length; i++) {
         filters[i].addEventListener("click", (event) => {
             if (event.target.id === "all-filter") {
-                addOrRemoveClassSelected(event.target,filters)
+                addOrRemoveClassSelected(event.target,filters) 
                 for (let y = 0; y < figureElements.length; y++) {
                     figureElements[y].classList.remove("hidden")            
                 }
@@ -89,13 +87,13 @@ function addOrRemoveClassSelected(eventTarget,filters){ // Fonction d'ajout de l
     eventTarget.classList.add("selected-filter")
 }
 
-async function callDataApi(url) { // Fonction d'appel à l'API pour récupérer les categories
+async function callDataApi(url) { // Fonction d'appel à l'API pour récupérer les categories ou les travaux
     try {
-        const apiCategoryResponse = await fetch (url)
-        if (!apiCategoryResponse.ok) {
-            throw new Error(`Response has fail with the status ${apiCategoryResponse.status}`)      
+        const apiResponse = await fetch (url)
+        if (!apiResponse.ok) {
+            throw new Error(`Response has fail with the status ${apiResponse.status}`)      
         } else {
-            return apiCategoryResponse.json()       
+            return apiResponse.json()       
         }   
     } catch (error) {
         console.error('An error was encounter during the API execution : ',error) 

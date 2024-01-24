@@ -320,6 +320,7 @@ footer{
 	}
 
 	.error-display{
+		text-align: center;
 		margin-top: 25px;
 		margin-bottom: 30px;
 		color: #B1663C;

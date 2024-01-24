@@ -6,8 +6,8 @@ const loginForm = document.querySelector(".login-form")
 const inputsArray = document.querySelectorAll("input")
 
 
-//La fonction etLogInInformations écoute l'événement submit du formulaire et récupère les valeurs de email et password
-async function getLogInInformations() {
+
+async function getLogInInformations() { //La fonction getLogInInformations écoute l'événement submit du formulaire et récupère les valeurs de email et password
     logInForm.addEventListener("submit", async (event) =>{
         event.preventDefault();
         if (errorDisplayZone) {
@@ -29,8 +29,7 @@ function deleteMessage(){
     errorDisplayZone.innerHTML = ""
 }
 
-// La fonction postLogIn envoi à l'API l'email et le mot de passe de l'utilisateur et en cas de réponse favorable envoi le token de connexion , sinon un message d'erreur.
-async function postLogIn(email,password) {
+async function postLogIn(email,password) { // La fonction postLogIn envoi à l'API l'email et le mot de passe de l'utilisateur et en cas de réponse favorable envoi le token de connexion , sinon un message d'erreur.
     const postData = {
         "email": email,
         "password": password

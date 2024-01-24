@@ -13,6 +13,8 @@ const addPhotoButton = document.querySelector(".add-photo-button")
 const inputImage = document.getElementById("load-image")
 const imagePreview = document.getElementById("image-preview")
 const imageDefaultBackground = document.querySelector(".AddImageZone i")
+const gallery = document.querySelector(".gallery")
+const modalMessage = document.querySelector(".modal-message")
 
 const CategoriesURL = "http://localhost:5678/api/categories"
 const worksURL = "http://localhost:5678/api/works"
@@ -75,6 +77,12 @@ async function deletework(workId,tokenBearer) {
     }
 }
 
+// Fonction d'affichage du message dans la modale pour informer l'utilisateur
+function displayModalMessage(message) {
+    modalMessage.textContent = message
+    modalMessage.classList.remove("hidden")
+}
+
 // Fonction d'envoie d'un nouveau work 
 async function addWork(tokenBearer) {
     const formData = new FormData();
@@ -94,22 +102,58 @@ async function addWork(tokenBearer) {
         const addWorkkAPIResponse = await fetch("http://localhost:5678/api/works", postRequestOption)
         if (addWorkkAPIResponse.status !== 201) {
             if (addWorkkAPIResponse.status === 400) {
-                alert("Erreur, requête erroné")
+                displayModalMessage("Erreur, requête erroné")
             } else if (addWorkkAPIResponse.status === 401){
-                alert("Erreur, vous n'êtes pas autorisée à faire cette requête, rapprochez-vous d'un administrateur")
+                displayModalMessage("Erreur, vous n'êtes pas autorisée à faire cette requête, rapprochez-vous d'un administrateur")
             }else{
-                alert("Erreur, une erreur inattendue, c'est produite")
+                displayModalMessage("Erreur, une erreur inattendue, c'est produite")
             }
             throw new Error (`Response has fail with the status ${addWorkkAPIResponse.status}`)
         }
-        return addWorkkAPIResponse.json() 
+        const newWork =  []
+        newWork.push(await addWorkkAPIResponse.json())
+        addNewWorkInGallery(newWork)
+        addNewWorkInModalGallery(newWork)
+        displayModalMessage("La nouvelle entrée est bien enregistré")
+        addWorkForm.reset()
+        document.querySelector(".add-photo-button").classList.remove("hidden")
+        document.querySelector(".AddImageZone p").classList.remove("hidden")
+        document.querySelector(".AddImageZone").classList.remove("no-padding")
+        imagePreview.classList.add("hidden")
+        imageDefaultBackground.classList.remove("hidden")
     } catch (error) {
         console.error('An error was encounter during the API execution : ',error)
     }
 }
 
-// Fonction d'ouverture de la modal d'ajout de travaux et de fermeture de celle de supression des travaux
-function OpenAddWorkModal(){
+function addNewWorkInGallery(work){ // Fonction d'ajout dynamique du travai ajouté dans la gallerie principale
+    for (let i = 0; i < work.length; i++) {
+        const figureElement = document.createElement("figure")
+        const imageElement = document.createElement("img")
+        figureElement.setAttribute("data-id", work[i].id);
+        figureElement.setAttribute("data-category-id", work[i].categoryId);
+        imageElement.src = work[i].imageUrl
+        imageElement.alt = work[i].title
+        const figcaptionElement = document.createElement("figcaption")
+        figcaptionElement.textContent = work[i].title
+        figureElement.appendChild(imageElement)
+        figureElement.appendChild(figcaptionElement)
+        gallery.appendChild(figureElement)
+    }
+}
+
+function addNewWorkInModalGallery(work){ // Fonction d'ajout dynamique du travai ajouté dans la gallerie de la modale de supression des éléments
+    for (let i = 0; i < work.length; i++) {
+        const figureElement = document.createElement("figure")
+        figureElement.innerHTML = `<img src="${work[i].imageUrl}" alt="${work[i].title}"><div class="trash-button"><i class="fa-solid fa-trash-can" data-work-id="${work[i].id}" style="color: #ffffff;"></i></div>`
+        figureElement.setAttribute("data-id", work[i].id)
+        figureElement.setAttribute("data-category-id", work[i].categoryId)
+        modalGallery.appendChild(figureElement)
+    }
+}
+
+
+function OpenAddWorkModal(){ // Fonction d'ouverture de la modal d'ajout de travaux et de fermeture de celle de supression des travaux
     closeModal(document.getElementById("modal"))
     openModal(document.getElementById("add-work-modal"))
     fillFormSelect(selectInput)
@@ -194,24 +238,24 @@ if (modalWindows) {
     }
 }
 
-// Fonction de fermeture des modals
-function closeModal(modal) {
+function closeModal(modal) { // Fonction de fermeture des modals
     modal.classList.add("hidden")
     modal.setAttribute("aria-hidden", true)
     modal.removeAttribute("aria-modal")
     ClearAddImageZone(imagePreview)
+    modalMessage.textContent = ""
+    modalMessage.classList.add("hidden")
 }
 
-// Fonction d'ouverture des modals
-function openModal(modal) {
+function openModal(modal) { // Fonction d'ouverture des modals
     modal.classList.remove("hidden")
     modal.setAttribute("aria-hidden", false)
     modal.setAttribute("aria-modal", true)
 }
 
 
-// Fonction de remplissage des categories dans la modal Ajout photo
-async function fillFormSelect(selectInput) {
+
+async function fillFormSelect(selectInput) { // Fonction de remplissage des categories dans la modal Ajout photo
     const categories = await callDataApi(CategoriesURL)
     for (let i = 0; i < categories.length; i++) {
         const optionElement = document.createElement("option")
@@ -233,8 +277,7 @@ function enabledSubmitButton(button,titleInput,selectInput,inputImage,form) {
     })
 }
 
-// Fonction d'écoute du bouton addWorkSubmitButton et d'appel API POST d'un nouveau work
-function addWorkFormSubmit(addWorkForm) {
+function addWorkFormSubmit(addWorkForm) { // Fonction d'écoute du bouton addWorkSubmitButton et d'appel API POST d'un nouveau work
     addWorkForm.addEventListener("submit", async (event) => {
         event.preventDefault()
         event.stopPropagation()

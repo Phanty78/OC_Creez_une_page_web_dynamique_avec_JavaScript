@@ -15,6 +15,7 @@ const imagePreview = document.getElementById("image-preview")
 const imageDefaultBackground = document.querySelector(".AddImageZone i")
 const gallery = document.querySelector(".gallery")
 const modalMessage = document.querySelector(".modal-message")
+const inputsArray = document.querySelectorAll(".add-work-form input")
 
 const CategoriesURL = "http://localhost:5678/api/categories"
 const worksURL = "http://localhost:5678/api/works"
@@ -333,4 +334,13 @@ if (closeModalButtons) {
             }
         })   
     }   
+}
+
+for (let i = 0; i < inputsArray.length; i++) {
+    inputsArray[i].addEventListener("focus",(event) =>{
+        if (modalMessage) {
+            modalMessage.textContent = ""
+            modalMessage.classList.add("hidden")
+        }      
+    })
 }

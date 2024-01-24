@@ -66,11 +66,14 @@ async function postLogIn(email,password) { // La fonction postLogIn envoi à l'A
 }
 
 getLogInInformations()
+eraseMessageOnFocus(inputsArray)
 
-for (let i = 0; i < inputsArray.length; i++) {
-    inputsArray[i].addEventListener("focus",(event) =>{
-        if (errorDisplayZone) {
-            deleteMessage()
-        }      
-    })
+function eraseMessageOnFocus(inputsArray) {
+    for (let i = 0; i < inputsArray.length; i++) {
+        inputsArray[i].addEventListener("focus",(event) =>{
+            if (errorDisplayZone) {
+                deleteMessage()
+            }      
+        })
+    }
 }

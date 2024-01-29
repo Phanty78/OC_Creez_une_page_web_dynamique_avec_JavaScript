@@ -100,19 +100,19 @@ async function addWork(tokenBearer) {
         body: formData,
     }
     try {
-        const addWorkkAPIResponse = await fetch("http://localhost:5678/api/works", postRequestOption)
-        if (addWorkkAPIResponse.status !== 201) {
-            if (addWorkkAPIResponse.status === 400) {
+        const addWorkAPIResponse = await fetch("http://localhost:5678/api/works", postRequestOption)
+        if (addWorkAPIResponse.status !== 201) {
+            if (addWorkAPIResponse.status === 400) {
                 displayModalMessage("Erreur, requête erroné")
-            } else if (addWorkkAPIResponse.status === 401){
+            } else if (addWorkAPIResponse.status === 401){
                 displayModalMessage("Erreur, vous n'êtes pas autorisée à faire cette requête, rapprochez-vous d'un administrateur")
             }else{
                 displayModalMessage("Erreur, une erreur inattendue, c'est produite")
             }
-            throw new Error (`Response has fail with the status ${addWorkkAPIResponse.status}`)
+            throw new Error (`Response has fail with the status ${addWorkAPIResponse.status}`)
         }
         const newWork =  []
-        newWork.push(await addWorkkAPIResponse.json())
+        newWork.push(await addWorkAPIResponse.json())
         addNewWorkInGallery(newWork)
         addNewWorkInModalGallery(newWork)
         displayModalMessage("La nouvelle entrée est bien enregistré")

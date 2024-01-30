@@ -36,20 +36,15 @@ function manageFilters() { //Cette fonction affiche ou cache les travaux en fonc
     const figureElements = document.querySelectorAll(".gallery figure")
     for (let i = 0; i < filters.length; i++) {
         filters[i].addEventListener("click", (event) => {
-            if (event.target.id === "all-filter") {
-                addOrRemoveClassSelected(event.target,filters) 
-                for (let y = 0; y < figureElements.length; y++) {
-                    figureElements[y].classList.remove("hidden")            
-                }
-            }else{
-                addOrRemoveClassSelected(event.target,filters)
-                for (let y = 0; y < figureElements.length; y++) {
-                    figureElements[y].classList.remove("hidden") 
-                    if ((figureElements[y].dataset.categoryId) !== event.target.dataset.liId) {
-                        figureElements[y].classList.add("hidden") 
-                    }         
-                }
-            }     
+            const filtersArray = Array.from(filters) //Les trois lignes suivantes gèrent l'ajout ou la suppresion de la class selected-filter sur les bouton de filtre
+            filtersArray.forEach((filter) => filter.classList.remove("selected-filter"))
+            event.target.classList.add("selected-filter")
+            const figureElementsArray = Array.from(figureElements);
+            figureElementsArray.forEach((figureElement) => figureElement.classList.remove("hidden"))
+            if (event.target.id !== "all-filter") {
+                const filteredFigureElements = figureElementsArray.filter((figureElement) => ((figureElement.dataset.categoryId) !== event.target.dataset.liId))
+                filteredFigureElements.forEach((figureElement) => figureElement.classList.add("hidden"))
+            } 
         })
     }
 }
@@ -78,13 +73,6 @@ function createFiltersButton(category){ // Fonction de création des bouttons fi
         liElement.textContent = category[i].name
         filtersContainer.appendChild(liElement)      
     }
-}
-
-function addOrRemoveClassSelected(eventTarget,filters){ // Fonction d'ajout de la class selected et de la supression de cette même classe sur les autres filtres
-    for (let i = 0; i < filters.length; i++) {
-        filters[i].classList.remove("selected-filter")  
-    }
-    eventTarget.classList.add("selected-filter")
 }
 
 async function callDataApi(url) { // Fonction d'appel à l'API pour récupérer les categories ou les travaux

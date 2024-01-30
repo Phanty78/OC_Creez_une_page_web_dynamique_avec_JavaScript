@@ -12,7 +12,7 @@ const addWorkForm = document.querySelector(".add-work-form")
 const addPhotoButton = document.querySelector(".add-photo-button")
 const inputImage = document.getElementById("load-image")
 const imagePreview = document.getElementById("image-preview")
-const imageDefaultBackground = document.querySelector(".AddImageZone i")
+const imageDefaultBackground = document.querySelector(".add-image-zone i")
 const gallery = document.querySelector(".gallery")
 const modalMessage = document.querySelector(".modal-message")
 const inputsArray = document.querySelectorAll(".add-work-form input")
@@ -118,8 +118,8 @@ async function addWork(tokenBearer) {
         displayModalMessage("La nouvelle entrée est bien enregistré")
         addWorkForm.reset()
         document.querySelector(".add-photo-button").classList.remove("hidden")
-        document.querySelector(".AddImageZone p").classList.remove("hidden")
-        document.querySelector(".AddImageZone").classList.remove("no-padding")
+        document.querySelector(".add-image-zone p").classList.remove("hidden")
+        document.querySelector(".add-image-zone").classList.remove("no-padding")
         imagePreview.classList.add("hidden")
         imageDefaultBackground.classList.remove("hidden")
     } catch (error) {
@@ -179,8 +179,8 @@ function ClearAddImageZone(imageElement) {
     inputImage.type = "text"
     inputImage.type = "file"
     document.querySelector(".add-photo-button").classList.remove("hidden")
-    document.querySelector(".AddImageZone p").classList.remove("hidden")
-    document.querySelector(".AddImageZone").classList.remove("no-padding")
+    document.querySelector(".add-image-zone p").classList.remove("hidden")
+    document.querySelector(".add-image-zone").classList.remove("no-padding")
     imagePreview.classList.add("hidden")
     imageDefaultBackground.classList.remove("hidden")
 }
@@ -193,24 +193,25 @@ function manageImageUpload(inputImage,imagePreview,imageDefaultBackground) {
         event.stopPropagation()
         if (inputImage.files && inputImage.files[0]) {
             if (inputImage.files[0].size <= 4000000) {
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    imagePreview.src = e.target.result;
-                };
-                reader.readAsDataURL(inputImage.files[0]);
-                document.querySelector(".add-photo-button").classList.add("hidden")
-                document.querySelector(".AddImageZone p").classList.add("hidden")
-                document.querySelector(".AddImageZone").classList.add("no-padding")
-                imagePreview.classList.remove("hidden")
-                imageDefaultBackground.classList.add("hidden")
-                
+                if (inputImage.files[0].type === "image/png" || inputImage.files[0].type === "image/jpeg" ) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        imagePreview.src = e.target.result;
+                    };
+                    reader.readAsDataURL(inputImage.files[0]);
+                    document.querySelector(".add-photo-button").classList.add("hidden")
+                    document.querySelector(".add-image-zone p").classList.add("hidden")
+                    document.querySelector(".add-image-zone").classList.add("no-padding")
+                    imagePreview.classList.remove("hidden")
+                    imageDefaultBackground.classList.add("hidden")
+                } else {
+                    alert("Le fichier que vous tenter de télécharger n'est pas de type .png ou .jpeg")
+                }        
             } else {
                 alert("Le fichier que vous tenter de télécharger dépasser la limite de 4Mo")
-                ClearInputFile(inputImage)
             }
         }
-    })
-    
+    })   
 }
 
 // Fonction de retour à la fenêtre modal précédente

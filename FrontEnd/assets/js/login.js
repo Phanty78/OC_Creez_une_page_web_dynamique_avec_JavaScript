@@ -1,11 +1,6 @@
 const logInForm = document.querySelector(".login-form")
 const errorDisplayZone = document.querySelector(".error-display")
-const emailInput = document.getElementById("email")
-const passwordInput = document.getElementById("password")
-const loginForm = document.querySelector(".login-form")
 const inputsArray = document.querySelectorAll("input")
-
-
 
 async function getLogInInformations() { //La fonction getLogInInformations écoute l'événement submit du formulaire et récupère les valeurs de email et password
     logInForm.addEventListener("submit", async (event) =>{
@@ -13,10 +8,10 @@ async function getLogInInformations() { //La fonction getLogInInformations écou
         if (errorDisplayZone) {
             deleteMessage()
         }
-        const email = event.target.querySelector("#email").value
-        const password = event.target.querySelector("#password").value
+        const formData = new FormData(event.target);
+        const email = formData.get("email")
+        const password = formData.get("password")
 
-        // On appel la fonction postLogin afin d'envoyer nos variables à l'API pour récupérer le token d'identification.
        let token = await postLogIn(email,password)
        if (token !== undefined && token !== null) {
             window.localStorage.setItem("token", token)

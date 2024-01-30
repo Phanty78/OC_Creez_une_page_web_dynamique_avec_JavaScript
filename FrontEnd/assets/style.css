@@ -516,7 +516,7 @@ footer{
 	line-height: normal;
 }
 
-.AddImageZone{
+.add-image-zone{
 	background-color: #E8F1F6;
 	width: 420px;
 	height: 169px;
@@ -530,7 +530,7 @@ footer{
 	padding-bottom: 19px;
 }
 
-.AddImageZone img{
+.add-image-zone img{
 	max-width: 420px;
 	max-height: 169px;
 	flex: 0 1 0;

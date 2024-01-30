@@ -279,23 +279,27 @@ function enabledSubmitButton(button,titleInput,selectInput,inputImage,form) {
     })
 }
 
-function addWorkFormSubmit(addWorkForm) { // Fonction d'écoute du bouton addWorkSubmitButton et d'appel API POST d'un nouveau work
-    addWorkForm.addEventListener("submit", async (event) => {
-        event.preventDefault()
-        event.stopPropagation()
-        if (inputImage.files.length > 0 && titleInput.value !== "" && selectInput.value !== "") {
-            addWorkSubmitButton.disabled = true;
-            try {
-                await addWork(token)
-                addWorkSubmitButton.disabled = false;
-            } catch (error) {
-                console.error('An error occurred during work submission: ', error);
-                addWorkSubmitButton.disabled = false;
-            }
-            
+
+const handleAddWorkSubmit = async (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    if (inputImage.files.length > 0 && titleInput.value !== "" && selectInput.value !== "") {
+        addWorkSubmitButton.disabled = true;
+        try {
+            await addWork(token);
+            addWorkSubmitButton.disabled = false;
+        } catch (error) {
+            console.error('An error occurred during work submission: ', error);
+            addWorkSubmitButton.disabled = false;
         }
-    })
+    }
+};
+
+function addWorkFormSubmit(addWorkForm) {
+    addWorkForm.addEventListener("submit", handleAddWorkSubmit);
 }
+
+addWorkForm.removeEventListener("submit", handleAddWorkSubmit);
 
 
 // Gestion des événements liés au modals

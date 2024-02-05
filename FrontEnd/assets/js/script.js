@@ -5,6 +5,7 @@ const editorModeBanner = document.querySelector(".editor-mode-banner")
 const editionButton = document.querySelector(".edition-button")
 const filterContainer = document.querySelector(".filter-container")
 const portfolioHeader = document.querySelector(".portfolio-header")
+const loginLink = document.querySelector(".login-link")
 
 const CategoriesURL = "http://localhost:5678/api/categories"
 const worksURL = "http://localhost:5678/api/works"
@@ -19,6 +20,9 @@ async function chooseMode() { // Cette fonction définit le mode à utiliser
         editionButton.classList.remove("hidden")
         filterContainer.classList.add("hidden")
         portfolioHeader.classList.add("more-margin")
+        loginLink.textContent = "logout"
+        loginLink.href = "#"
+        logOut(loginLink)
     }else{
         // On crée les boutons filter grace à un appel de l'api category
         createFiltersButton(await callDataApi(CategoriesURL))
@@ -29,6 +33,15 @@ async function chooseMode() { // Cette fonction définit le mode à utiliser
         displayWorks(works)
         manageFilters()
     }
+}
+
+function logOut(loginLink) { // Cette fonction permet la deconnexion de l'utilisateur , le token est supprimé du localStorage
+    loginLink.addEventListener("click", (event) => {
+        event.stopPropagation()
+        window.localStorage.removeItem("token")
+        loginLink.href = "index.html"
+    })
+    loginLink.href="login.html"
 }
 
 function manageFilters() { //Cette fonction affiche ou cache les travaux en fonctions du filtre sélectionné.
